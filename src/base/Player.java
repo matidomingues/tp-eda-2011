@@ -1,15 +1,17 @@
 package base;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class Player {
 
-	private Set<Point> validMoves = new HashSet<Point>();
+	private	HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point,ArrayList<Point>>();
+	private List<Point> possibleMoves;
 	private int chips = 0;
 
 	public boolean checkValid(Point loc) {
-		if (validMoves.contains(loc)) {
+		if (validMoves.containsKey(loc)) {
 			return true;
 		}
 		return false;
@@ -21,5 +23,16 @@ public class Player {
 
 	public void inChips() {
 		this.chips += 1;
+	}
+	
+	public void addMove(Point p, Point dir){
+		if(!validMoves.containsKey(p)){
+			validMoves.put(p, new ArrayList<Point>());
+		}
+		validMoves.get(p).add(dir);
+	}
+	
+	public List<Point> getDirs(Point p){
+		return validMoves.get(p);
 	}
 }

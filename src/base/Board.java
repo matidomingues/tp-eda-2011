@@ -6,35 +6,23 @@ public class Board {
 
 	private Player[][] board = new Player[8][8];
 
-	public boolean add(Player actual, Player enem, Point loc) {
-		int posmove = 0;
-		Player aboard;
-		Point aux = new Point();
-		for (int i = -1; i <= 1; i++) {
-			for (int w = -1; w <= 1; i++) {
-				aux.setPoint(loc.x + i, loc.y + w);
-				if ((i != 0 && w != 0) || inBorder(aux)) {
-					aboard = getPos(aux);
-					if (aboard != null && aboard != actual) {
-						if (setLoc(aux, new Point(i, w), actual)) {
-							setPos(loc, actual);
-							posmove = 1;
-						}
-					}
-				}
-			}
+	public boolean add(Player actual, Player enemy, Point loc) {
+		List<Point> directions = actual.getDirs(loc);
+		if (directions == null) {
+			return false;
 		}
-		if (posmove == 1) {
-			return true;
+		setPosition(loc, actual, enemy);
+		for (Point dir : directions) {
+			setLocation(loc.sumPoint(dir), dir, actual, enemy);
 		}
-		return false;
+		return true;
 	}
 
 	public Player getPos(Point loc) {
 		return board[loc.x][loc.y];
 	}
 
-	private void setPos(Point loc, Player actual) {
+	private void setPosition(Point loc, Player actual, Player enemy) {
 		Player aux = board[loc.x][loc.y];
 		if (aux != null && aux != actual) {
 			aux.deChips();
@@ -44,29 +32,13 @@ public class Board {
 
 	}
 
-	private boolean setLoc(Point loc, Point dir, Player actual) {
-		if (!inBorder(loc) || board[loc.x][loc.y] == null) {
-			return false;
+	private void setLocation(Point loc, Point dir, Player actual, Player enemy) {
+		if (getPos(loc) == actual) {
+			return;
 		}
-		if (board[loc.x][loc.y] == actual) {
-			return true;
-		}
-		if (setLoc(new Point(loc.x + dir.x, loc.y + dir.y), dir, actual)) {
-			setPos(loc, actual);
-			return true;
-		}
-		return false;
+		setPosition(loc, actual, enemy);
+		setLocation(loc.sumPoint(dir), dir, actual, enemy);
 
-	}
-
-	public boolean checkLoc(Point loc, Point dir, Player actual, Player looking) {
-		if (!inBorder(loc) || board[loc.x][loc.y] == null) {
-			return false;
-		}
-		if (board[loc.x][loc.y] == actual) {
-			return true;
-		}
-		return setLoc(new Point(loc.x + dir.x, loc.y + dir.y), dir, actual);
 	}
 
 	public boolean inBorder(Point loc) {
@@ -74,13 +46,55 @@ public class Board {
 			return true;
 		}
 		return false;
-	
+
 	}
-	
-	public List<Point> possibleMoves(){
+
+	public List<Point> possibleMoves() {
 		return null;
 	}
 
-	
-	
+	public void checkValid(Point loc, Player actual) {
+		Player auxpos;
+		Point auxp;
+		for (int i = -1; i <= 1; i++) {
+			for (int w = -1; w <= 1; i++) {
+				auxpos = board[loc.x + i][loc.y + w];
+
+				if (auxpos == null && getPos(loc) != null
+						&& getPos(loc) != actual) {
+					auxp = checkLast(loc, Point.antiDirection(new Point(i, w)),
+							actual);
+					if (getPos(auxp) == actual) {
+						actual.addMove(new Point(loc.x + i, loc.y + w),
+								new Point(i, w));
+					}
+				} else if (auxpos != null && auxpos != actual
+						&& getPos(loc) == actual) {
+					auxp = checkLast(loc, Point.antiDirection(new Point(i, w)),
+							actual);
+					if (getPos(auxp) == null) {
+						actual.addMove(auxp, new Point(i, w));
+					}
+				} else if (auxpos != null && auxpos == actual
+						&& getPos(loc) != actual) {
+					auxp = checkLast(loc, Point.antiDirection(new Point(i, w)),
+							actual);
+					if (getPos(auxp) == null) {
+						actual.addMove(auxp, new Point(i, w));
+					}
+				}
+
+			}
+		}
+	}
+
+	private Point checkLast(Point loc, Point dir, Player actual) {
+		if (!inBorder(loc)) {
+			return null;
+		} else if (getPos(loc) == null || getPos(loc) == actual) {
+			return new Point(loc.x, loc.y);
+		}
+		return checkLast(loc, dir, actual);
+	}
+
 }
