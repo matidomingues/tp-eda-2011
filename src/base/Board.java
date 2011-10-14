@@ -1,10 +1,12 @@
 package base;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Board {
 
 	private Player[][] board = new Player[8][8];
+	List<Point> changed;
 
 	public boolean add(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
@@ -36,6 +38,10 @@ public class Board {
 	}
 
 	private void lastMoves(Player actual, Player enemy) {
+		for (Point a : changed) {
+			checkValid(a, actual);
+			checkValid(a, enemy);
+		}
 		for (Point a : actual.getFinalPoints()) {
 			checkValid(a, actual);
 		}
@@ -49,6 +55,7 @@ public class Board {
 	private void setNewMoves(Player actual, Player enemy) {
 		actual.setNewMoves();
 		enemy.setNewMoves();
+		changed = new ArrayList<Point>();
 	}
 
 	public Player getPos(Point loc) {
@@ -62,8 +69,7 @@ public class Board {
 		}
 		board[loc.x][loc.y] = actual;
 		actual.inChips();
-		checkValid(loc, actual);
-		checkValid(loc, enemy);
+		changed.add(loc);
 
 	}
 
@@ -77,7 +83,7 @@ public class Board {
 	}
 
 	public boolean inBorder(Point loc) {
-		if (loc.x >= 0 && loc.x < 9 && loc.y >= 0 && loc.y < 9) {
+		if (loc.x >= 0 && loc.x < 8 && loc.y >= 0 && loc.y < 8) {
 			return true;
 		}
 		return false;
@@ -89,33 +95,39 @@ public class Board {
 		Point auxp;
 		for (int i = -1; i <= 1; i++) {
 			for (int w = -1; w <= 1; w++) {
-				// TODO: esta bien a lo cabeza, despues lo arreglo.
-				if (!inBorder(loc.sumPoint(new Point(i, w))) || i == 0
-						&& w == 0) {
-					break;
-				}
-				auxpos = board[loc.x + i][loc.y + w];
+				if (inBorder(loc.sumPoint(new Point(i, w)))
+						&& !(i == 0 && w == 0)) {
 
-				if (auxpos == null && getPos(loc) != null
-						&& getPos(loc) != actual) {
-					auxp = checkLast(loc, Point.antiDirection(new Point(i, w)),
-							actual);
-					if (getPos(auxp) == actual) {
-						actual.addMove(new Point(loc.x + i, loc.y + w),
-								new Point(i, w));
-					}
-				} else if (auxpos != null && auxpos != actual
-						&& getPos(loc) == actual) {
-					auxp = checkLast(loc, new Point(i, w), actual);
-					if (getPos(auxp) == null) {
-						actual.addMove(auxp, new Point(i, w));
-					}
-				} else if (auxpos != null && auxpos == actual
-						&& getPos(loc) != actual) {
-					auxp = checkLast(loc, Point.antiDirection(new Point(i, w)),
-							actual);
-					if (getPos(auxp) == null) {
-						actual.addMove(auxp, new Point(i, w));
+					auxpos = board[loc.x + i][loc.y + w];
+
+					if (auxpos == null && getPos(loc) != null
+							&& getPos(loc) != actual) {
+						auxp = checkLast(loc, Point.antiDirection(new Point(i,
+								w)), actual, 0);
+						if (auxp != null && getPos(auxp) == actual) {
+							actual.addMove(new Point(loc.x + i, loc.y + w),
+									Point.antiDirection(new Point(i, w)));
+						}
+					} else if (auxpos != null && auxpos != actual
+							&& getPos(loc) == actual) {
+						auxp = checkLast(loc, new Point(i, w), actual, 0);
+						if (auxp != null && getPos(auxp) == null) {
+							actual.addMove(auxp, Point.antiDirection(new Point(
+									i, w)));
+						}
+					} else if (auxpos == actual && getPos(loc) != actual
+							&& getPos(loc) != null) {
+						auxp = checkLast(loc, Point.antiDirection(new Point(i,
+								w)), actual, 0);
+						if (auxp != null && getPos(auxp) == null) {
+							actual.addMove(auxp, new Point(i, w));
+						}
+					} else if (getPos(loc) == null && auxpos != null
+							&& auxpos != actual) {
+						auxp = checkLast(loc, new Point(i, w), actual, 0);
+						if (auxp != null && getPos(auxp) == actual) {
+							actual.addMove(loc, new Point(i, w));
+						}
 					}
 				}
 
@@ -123,13 +135,13 @@ public class Board {
 		}
 	}
 
-	private Point checkLast(Point loc, Point dir, Player actual) {
+	private Point checkLast(Point loc, Point dir, Player actual, int num) {
 		if (!inBorder(loc)) {
 			return null;
-		} else if (getPos(loc) == null || getPos(loc) == actual) {
+		} else if (num != 0 && (getPos(loc) == null || getPos(loc) == actual)) {
 			return loc;
 		}
-		return checkLast(loc.sumPoint(dir), dir, actual);
+		return checkLast(loc.sumPoint(dir), dir, actual, num + 1);
 	}
 
 	/**
@@ -142,26 +154,29 @@ public class Board {
 					System.out.print("1");
 				} else if (b == enemy) {
 					System.out.print("2");
-				} else{
+				} else {
 					System.out.print("0");
 				}
 			}
 			System.out.println("");
 		}
 		System.out.println("Player Points");
-		for(Point a : actual.getFinalPoints()){
+		for (Point a : actual.getFinalPoints()) {
 			System.out.println(a.x + " " + a.y);
-			for(Point b: actual.getDirs(a)){
-				System.out.println(b.x + " " + b.y);
-			}
-		}
+			/*
+			 * for (Point b : actual.getDirs(a)) { System.out.println(b.x + " "
+			 * + b.y); }
+			 */}
 		System.out.println("Enemy Points");
-		for(Point a : enemy.getFinalPoints()){
-			System.out.println(a.x +" "+ a.y);
-			for(Point b: enemy.getDirs(a)){
-				System.out.println(b.x +" "+ b.y);
-			}
-		}
+		for (Point a : enemy.getFinalPoints()) {
+			System.out.println(a.x + " " + a.y);
+			/*
+			 * for (Point b : enemy.getDirs(a)) { System.out.println(b.x + " " +
+			 * b.y); }
+			 */}
+		
+		System.out.println("Player points: " + actual.getChips());
+		System.out.println("Enemy points: " + enemy.getChips());
 	}
 
 }

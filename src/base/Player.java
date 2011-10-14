@@ -51,4 +51,8 @@ public class Player {
 	public Set<Point> getFinalPoints() {
 		return validMoves.keySet();
 	}
+	
+	public int getChips(){
+		return chips;
+	}
 }

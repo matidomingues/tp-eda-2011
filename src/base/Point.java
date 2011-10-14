@@ -3,38 +3,44 @@ package base;
 public class Point {
 	int x;
 	int y;
-	
-	public Point(){
-		new Point(0,0);
+
+	public Point() {
+		new Point(0, 0);
 	}
-	
+
 	public Point(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public Point sumPoint(Point x){
-		return new Point(this.x +x.x, this.y+x.y);
+	public Point sumPoint(Point x) {
+		return new Point(this.x + x.x, this.y + x.y);
 	}
-	public void setPoint(int x, int y){
+
+	public void setPoint(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}
-	
-	public static Point antiDirection(Point p){
+
+	public static Point antiDirection(Point p) {
 		Point newP = new Point();
-		if(p.x == 1){
+		if (p.x == 1) {
 			newP.x = -1;
-		}else{
+		} else if (p.x == 0) {
+			newP.x = 0;
+		} else {
 			newP.x = 1;
 		}
-		if(p.y == 1){
+		if (p.y == 1) {
 			newP.y = -1;
-		}else{
+		} else if (p.y == 0) {
+			newP.y = 0;
+		} else {
 			newP.y = 1;
 		}
 		return newP;
 	}
+
 	@Override
 	public int hashCode() {
 		return x * 7 + y * 13;
