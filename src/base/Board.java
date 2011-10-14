@@ -88,13 +88,12 @@ public class Board {
 		Player auxpos;
 		Point auxp;
 		for (int i = -1; i <= 1; i++) {
-			for (int w = -1; w <= 1; i++) {
+			for (int w = -1; w <= 1; w++) {
 				// TODO: esta bien a lo cabeza, despues lo arreglo.
 				if (!inBorder(loc.sumPoint(new Point(i, w))) || i == 0
 						&& w == 0) {
 					break;
 				}
-				System.out.println("x: "+ loc.x + i+" y: "+ loc.y + w);
 				auxpos = board[loc.x + i][loc.y + w];
 
 				if (auxpos == null && getPos(loc) != null
@@ -128,9 +127,9 @@ public class Board {
 		if (!inBorder(loc)) {
 			return null;
 		} else if (getPos(loc) == null || getPos(loc) == actual) {
-			return new Point(loc.x, loc.y);
+			return loc;
 		}
-		return checkLast(loc, dir, actual);
+		return checkLast(loc.sumPoint(dir), dir, actual);
 	}
 
 	/**
@@ -146,7 +145,21 @@ public class Board {
 				} else{
 					System.out.print("0");
 				}
-				System.out.println("");
+			}
+			System.out.println("");
+		}
+		System.out.println("Player Points");
+		for(Point a : actual.getFinalPoints()){
+			System.out.println(a.x + " " + a.y);
+			for(Point b: actual.getDirs(a)){
+				System.out.println(b.x + " " + b.y);
+			}
+		}
+		System.out.println("Enemy Points");
+		for(Point a : enemy.getFinalPoints()){
+			System.out.println(a.x +" "+ a.y);
+			for(Point b: enemy.getDirs(a)){
+				System.out.println(b.x +" "+ b.y);
 			}
 		}
 	}
