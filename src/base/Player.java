@@ -55,4 +55,8 @@ public class Player {
 	public int getChips(){
 		return chips;
 	}
+	
+	public int getMovesSize(){
+		return validMoves.size();
+	}
 }

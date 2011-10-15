@@ -174,9 +174,15 @@ public class Board {
 			 * for (Point b : enemy.getDirs(a)) { System.out.println(b.x + " " +
 			 * b.y); }
 			 */}
-		
+
 		System.out.println("Player points: " + actual.getChips());
 		System.out.println("Enemy points: " + enemy.getChips());
+	}
+
+	// TODO: agregar cantidad que come para ponderar, por ahora
+	// pondera nada mas por cantidad de movimientos y fichas
+	public int evaluateBoard(Player actual, Player enem) {
+		return (actual.getMovesSize() - enem.getMovesSize())+(actual.getChips() - enem.getChips());
 	}
 
 }
