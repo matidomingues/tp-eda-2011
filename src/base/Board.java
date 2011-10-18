@@ -19,7 +19,6 @@ public class Board {
 			setLocation(loc.sumPoint(dir), dir, actual, enemy);
 		}
 		lastMoves(actual, enemy);
-
 		return true;
 	}
 
