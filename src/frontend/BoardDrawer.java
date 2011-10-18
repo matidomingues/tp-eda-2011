@@ -9,13 +9,14 @@ import javax.swing.JFrame;
 import base.Board;
 import base.Cell;
 import base.Game;
+import base.MapObserver;
 import base.Player;
 import base.Point;
 import gui.GamePanel;
 import gui.GamePanelListener;
 import gui.ImageUtils;
 
-public class BoardDrawer extends JFrame implements GUI{
+public class BoardDrawer extends JFrame implements MapObserver{
 
 	private GamePanel drawer;
 	private Image[] images = new Image[3];
@@ -23,6 +24,7 @@ public class BoardDrawer extends JFrame implements GUI{
 	
 	
 	public void newGame(Board table, Player human, Player enemy){
+		main.subscribe(this);
 		this.drawer = new GamePanel(8,8,50,new onClickListener(),Color.BLACK);
 		setTitle("");
 		setSize(500, 500);
