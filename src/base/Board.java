@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Board {
@@ -147,7 +148,7 @@ public class Board {
 	}
 
 	private Point checkLast(Point loc, Point dir, Player actual, int num) {
-		if (!inBorder(loc)) {
+		if (!inBorder (loc)) {
 			return null;
 		} else if (num != 0
 				&& (getCell(loc) == null || getCell(loc) == actual.getColor())) {
@@ -207,6 +208,79 @@ public class Board {
 			}
 		}
 		return ret;
+	}
+	
+	public void add(int x, int y, Cell val){
+		
+	}
+	
+	public HashMap<Point, ArrayList<Point>> moves(Cell turn){
+		List<Point> moves = new ArrayList<Point>();
+		for(int boardX = 0; boardX < board.length; boardX++){
+			for(int boardY = 0; boardY < board.length; boardY++){
+				if(board[boardX][boardY] == turn){
+					for(int i=-1; i<2; i++){
+						for(int j=-1; j<2; j++){
+							Point pos = new Point(boardX+i, boardY+j);
+							Cell neighbor = board[pos.x][pos.y];
+							if(neighbor!=Cell.Empty && neighbor != turn){
+								boolean inBounds = true;
+								while(inBounds){
+									pos.x += i;
+									pos.y += j;
+									if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
+										inBounds = false;
+									}
+									else{
+										if(board[pos.x][pos.y] == Cell.Empty){
+											moves.add(new Point(pos.x, pos.y));
+											inBounds=false;
+										}
+										if(board[pos.x][pos.y] == turn){
+											inBounds= false;
+										}
+									}
+									
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}
+		HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
+		for(Point p: moves){
+			for(int i=-1; i<2; i++){
+				for(int j=-1; j<2; j++){
+					Point pos = new Point(p.x, p.y);
+					Cell neighbor = board[pos.x][pos.y];
+					if(neighbor!=Cell.Empty && neighbor != turn){
+						boolean inBounds = true;
+						while(inBounds){
+							ArrayList<Point> ar = new ArrayList<Point>();
+							pos.x += i;
+							pos.y += j;
+							if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
+								inBounds = false;
+							}
+							else{
+								if(board[pos.x][pos.y] == turn){
+									ar.add(new Point(i, j));
+									validMoves.put(new Point(pos.x, pos.y), ar);
+									inBounds=false;
+								}
+								if(board[pos.x][pos.y] == Cell.Empty ){
+									inBounds= false;
+								}
+							}
+							
+						}
+					}
+				}
+			}
+		}
+		return validMoves;
 	}
 
 }
