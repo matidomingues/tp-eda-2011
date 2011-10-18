@@ -5,8 +5,9 @@ import java.util.List;
 
 public class Board {
 
-	private Player[][] board = new Player[8][8];
-	List<Point> changed;
+	private Cell[][] board = new Cell[8][8];
+	private List<Point> changed;
+	private int[][] heuristic = new int[8][8];
 
 	public boolean add(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
@@ -14,9 +15,9 @@ public class Board {
 		if (directions == null) {
 			return false;
 		}
-		setPosition(loc, actual, enemy);
+		setCell(loc, actual, enemy);
 		for (Point dir : directions) {
-			setLocation(loc.sumPoint(dir), dir, actual, enemy);
+			setChips(loc.sumPoint(dir), dir, actual, enemy);
 		}
 		lastMoves(actual, enemy);
 		return true;
@@ -32,7 +33,7 @@ public class Board {
 	 */
 	public void noCheckAdd(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
-		setPosition(loc, actual, enemy);
+		setCell(loc, actual, enemy);
 		lastMoves(actual, enemy);
 	}
 
@@ -57,27 +58,27 @@ public class Board {
 		changed = new ArrayList<Point>();
 	}
 
-	public Player getPos(Point loc) {
+	public Cell getCell(Point loc) {
 		return board[loc.x][loc.y];
 	}
 
-	private void setPosition(Point loc, Player actual, Player enemy) {
-		Player aux = board[loc.x][loc.y];
-		if (aux != null && aux != actual) {
-			aux.deChips();
+	private void setCell(Point loc, Player actual, Player enemy) {
+		Cell aux = board[loc.x][loc.y];
+		if (aux == enemy.getColor()) {
+			enemy.decChips();
 		}
-		board[loc.x][loc.y] = actual;
-		actual.inChips();
+		board[loc.x][loc.y] = actual.getColor();
+		actual.incChips();
 		changed.add(loc);
 
 	}
 
-	private void setLocation(Point loc, Point dir, Player actual, Player enemy) {
-		if (getPos(loc) == actual) {
+	private void setChips(Point loc, Point dir, Player actual, Player enemy) {
+		if (getCell(loc) == actual.getColor()) {
 			return;
 		}
-		setPosition(loc, actual, enemy);
-		setLocation(loc.sumPoint(dir), dir, actual, enemy);
+		setCell(loc, actual, enemy);
+		setChips(loc.sumPoint(dir), dir, actual, enemy);
 
 	}
 
@@ -90,7 +91,7 @@ public class Board {
 	}
 
 	public void checkValid(Point loc, Player actual) {
-		Player auxpos;
+		Cell auxpos;
 		Point auxp;
 		for (int i = -1; i <= 1; i++) {
 			for (int w = -1; w <= 1; w++) {
@@ -99,32 +100,32 @@ public class Board {
 
 					auxpos = board[loc.x + i][loc.y + w];
 
-					if (auxpos == null && getPos(loc) != null
-							&& getPos(loc) != actual) {
+					if (auxpos == null && getCell(loc) != null
+							&& getCell(loc) != actual.getColor()) {
 						auxp = checkLast(loc, Point.antiDirection(new Point(i,
 								w)), actual, 0);
-						if (auxp != null && getPos(auxp) == actual) {
+						if (auxp != null && getCell(auxp) == actual.getColor()) {
 							actual.addMove(new Point(loc.x + i, loc.y + w),
 									Point.antiDirection(new Point(i, w)));
 						}
-					} else if (auxpos != null && auxpos != actual
-							&& getPos(loc) == actual) {
+					} else if (auxpos != null && auxpos != actual.getColor()
+							&& getCell(loc) == actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
-						if (auxp != null && getPos(auxp) == null) {
+						if (auxp != null && getCell(auxp) == null) {
 							actual.addMove(auxp, Point.antiDirection(new Point(
 									i, w)));
 						}
-					} else if (auxpos == actual && getPos(loc) != actual
-							&& getPos(loc) != null) {
+					} else if (auxpos == actual.getColor() && getCell(loc) != actual.getColor()
+							&& getCell(loc) != null) {
 						auxp = checkLast(loc, Point.antiDirection(new Point(i,
 								w)), actual, 0);
-						if (auxp != null && getPos(auxp) == null) {
+						if (auxp != null && getCell(auxp) == null) {
 							actual.addMove(auxp, new Point(i, w));
 						}
-					} else if (getPos(loc) == null && auxpos != null
-							&& auxpos != actual) {
+					} else if (getCell(loc) == null && auxpos != null
+							&& auxpos != actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
-						if (auxp != null && getPos(auxp) == actual) {
+						if (auxp != null && getCell(auxp) == actual.getColor()) {
 							actual.addMove(loc, new Point(i, w));
 						}
 					}
@@ -137,7 +138,7 @@ public class Board {
 	private Point checkLast(Point loc, Point dir, Player actual, int num) {
 		if (!inBorder(loc)) {
 			return null;
-		} else if (num != 0 && (getPos(loc) == null || getPos(loc) == actual)) {
+		} else if (num != 0 && (getCell(loc) == null || getCell(loc) == actual.getColor())) {
 			return loc;
 		}
 		return checkLast(loc.sumPoint(dir), dir, actual, num + 1);
@@ -147,11 +148,11 @@ public class Board {
 	 * test de impresion.
 	 */
 	public void printMap(Player actual, Player enemy) {
-		for (Player[] a : board) {
-			for (Player b : a) {
-				if (b == actual) {
+		for (Cell[] a : board) {
+			for (Cell b : a) {
+				if (b == actual.getColor()) {
 					System.out.print("1");
-				} else if (b == enemy) {
+				} else if (b == enemy.getColor()) {
 					System.out.print("2");
 				} else {
 					System.out.print("0");
