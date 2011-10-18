@@ -1,5 +1,6 @@
 package base;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -182,6 +183,47 @@ public class Board {
 	// pondera nada mas por cantidad de movimientos y fichas
 	public int evaluateBoard(Player actual, Player enem) {
 		return (actual.getMovesSize() - enem.getMovesSize())+(actual.getChips() - enem.getChips());
+	}
+	
+	public void add(int x, int y, Cell val){
+		
+	}
+	
+	public void moves(Board gameBoard, int turn){
+		List<Point> moves = new ArrayList<Point>();
+		for(int boardX = 0; boardX < 8; boardX++){
+			for(int boardY = 0; boardY < 8; boardY++){
+				if(board[boardX][boardY] == turn){
+					for(int i=-1; i<2; i++){
+						for(int j=-1; j<2; j++){
+							Point pos = new Point(key.x+i, key.y+j);
+							Integer neighbor = gameMap.get(pos);
+							if(neighbor!= null && neighbor != turn){
+								boolean inBounds = true;
+								while(inBounds){
+									pos.x += i;
+									pos.y += j;
+									if( pos.x >= 8 || pos.x < 0 || pos.y >= 8 || pos.y < 0){
+										inBounds = false;
+									}
+									else{
+										if(gameMap.get(pos) == null){
+											moves.add(new Point(pos.x, pos.y));
+											inBounds=false;
+										}
+										if(gameMap.get(pos) == turn){
+											inBounds= false;
+										}
+									}
+									
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}
 	}
 
 }
