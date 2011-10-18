@@ -7,6 +7,8 @@ import java.util.Set;
 
 public class Player {
 
+	
+	//TODO
 	private HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
 	private HashMap<Point, ArrayList<Point>> possibleMoves;
 	private int chips = 0;
