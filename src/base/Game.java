@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 
 public class Game {
+	private Board board;
+	private Player currentPlayer;
 
 	public Board load (String filePath) throws Exception
 	{
@@ -30,7 +32,8 @@ public class Game {
 				}
 			}
 			line = game.readLine();
-		}	
+		}
+
 		return gameBoard;
 	}
 

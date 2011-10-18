@@ -7,9 +7,12 @@ import java.util.Set;
 
 public class Player {
 
+	
+	//TODO
 	private HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
 	private HashMap<Point, ArrayList<Point>> possibleMoves;
 	private int chips = 0;
+	private Cell color;
 
 	public boolean checkValid(Point loc) {
 		if (validMoves.containsKey(loc)) {
@@ -22,11 +25,11 @@ public class Player {
 		this.possibleMoves = new HashMap<Point, ArrayList<Point>>();
 	}
 
-	public void deChips() {
+	public void decChips() {
 		this.chips -= 1;
 	}
 
-	public void inChips() {
+	public void incChips() {
 		this.chips += 1;
 	}
 
@@ -58,5 +61,9 @@ public class Player {
 	
 	public int getMovesSize(){
 		return validMoves.size();
+	}
+	
+	public Cell getColor(){
+		return color;
 	}
 }
