@@ -5,10 +5,20 @@ import java.util.List;
 
 public class Board {
 
-	private Cell[][] board = new Cell[8][8];
+	private Cell[][] board;
 	private List<Point> changed;
-	private int[][] heuristic = new int[8][8];
+	private int[][] heuristic;
 
+	public Board(int[][] heuristic){
+		this.board = new Cell[8][8];
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[0].length; j++){
+				this.board[i][j] = Cell.Empty;
+			}
+		}
+		this.heuristic = heuristic;
+	}
+	
 	public boolean add(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
 		List<Point> directions = actual.getDirs(loc);
@@ -83,7 +93,7 @@ public class Board {
 	}
 
 	public boolean inBorder(Point loc) {
-		if (loc.x >= 0 && loc.x < 8 && loc.y >= 0 && loc.y < 8) {
+		if (loc.x >= 0 && loc.x < board.length && loc.y >= 0 && loc.y < board.length) {
 			return true;
 		}
 		return false;
@@ -102,8 +112,8 @@ public class Board {
 
 					if (auxpos == null && getCell(loc) != null
 							&& getCell(loc) != actual.getColor()) {
-						auxp = checkLast(loc, Point.antiDirection(new Point(i,
-								w)), actual, 0);
+						auxp = checkLast(loc,
+								Point.antiDirection(new Point(i, w)), actual, 0);
 						if (auxp != null && getCell(auxp) == actual.getColor()) {
 							actual.addMove(new Point(loc.x + i, loc.y + w),
 									Point.antiDirection(new Point(i, w)));
@@ -112,13 +122,14 @@ public class Board {
 							&& getCell(loc) == actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == null) {
-							actual.addMove(auxp, Point.antiDirection(new Point(
-									i, w)));
+							actual.addMove(auxp,
+									Point.antiDirection(new Point(i, w)));
 						}
-					} else if (auxpos == actual.getColor() && getCell(loc) != actual.getColor()
+					} else if (auxpos == actual.getColor()
+							&& getCell(loc) != actual.getColor()
 							&& getCell(loc) != null) {
-						auxp = checkLast(loc, Point.antiDirection(new Point(i,
-								w)), actual, 0);
+						auxp = checkLast(loc,
+								Point.antiDirection(new Point(i, w)), actual, 0);
 						if (auxp != null && getCell(auxp) == null) {
 							actual.addMove(auxp, new Point(i, w));
 						}
@@ -138,7 +149,8 @@ public class Board {
 	private Point checkLast(Point loc, Point dir, Player actual, int num) {
 		if (!inBorder(loc)) {
 			return null;
-		} else if (num != 0 && (getCell(loc) == null || getCell(loc) == actual.getColor())) {
+		} else if (num != 0
+				&& (getCell(loc) == null || getCell(loc) == actual.getColor())) {
 			return loc;
 		}
 		return checkLast(loc.sumPoint(dir), dir, actual, num + 1);
@@ -181,8 +193,20 @@ public class Board {
 
 	// TODO: agregar cantidad que come para ponderar, por ahora
 	// pondera nada mas por cantidad de movimientos y fichas
-	public int evaluateBoard(Player actual, Player enem) {
-		return (actual.getMovesSize() - enem.getMovesSize())+(actual.getChips() - enem.getChips());
+	// se basa en mis fichas menos las del otro
+	public int evaluateBoard(Player player) {
+		int ret = 0;
+		for (int i = 0; i < board[0].length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
+				Cell color = board[i][j];
+				if (color == player.getColor()) {
+					ret = +heuristic[i][j];
+				} else if (color != Cell.Empty) {
+					ret = -heuristic[i][j];
+				}
+			}
+		}
+		return ret;
 	}
 
 }
