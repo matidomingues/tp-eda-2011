@@ -20,6 +20,11 @@ public class Board {
 		this.heuristic = heuristic;
 	}
 	
+	public void initNewBoard(){
+		board[3][3] = board[4][4] = Cell.White;
+		board[3][4] = board[4][3] = Cell.Black;
+	}
+	
 	public boolean add(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
 		List<Point> directions = actual.getDirs(loc);

@@ -4,21 +4,29 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
-public class Game {
-	private Board board;
-	private Player currentPlayer;
-	private int[][] heuristic;
-	private MapObserver observer;
+public abstract class Game {
+	protected Board board;
+	protected Player currentPlayer;
+	protected int[][] heuristic;
+	protected MapObserver observer;
+	protected int n;
+	protected boolean prune = false;
+	protected boolean treeMode = false;
 
-	public Game(String filePath) throws Exception {
-		this.heuristic = this.createHeuristic();
-		if (filePath == null) {
-			this.board = new Board(heuristic);
-		} else {
-			this.board = this.load(filePath);
-		}
+	public abstract Point miniMax();
+	
+	public void setPrune(boolean value){
+		this.prune = value;
 	}
-
+	
+	public void setTreeMode(boolean value){
+		this.treeMode = value;
+	}
+	
+//	public void setPlayer(Player player){
+//		this.currentPlayer = player;
+//	}
+	
 	public void subscribe(MapObserver observer) {
 		this.observer = observer;
 	}
