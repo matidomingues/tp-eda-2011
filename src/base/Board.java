@@ -9,18 +9,28 @@ public class Board {
 	private Cell[][] board;
 	private List<Point> changed;
 	private int[][] heuristic;
+	private MapObserver observer;
 
-	public Board(int[][] heuristic){
+	public Board(int[][] heuristic) {
 		this.board = new Cell[8][8];
-		for(int i = 0; i < board.length; i++){
-			for(int j = 0; j < board[0].length; j++){
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
 				this.board[i][j] = Cell.Empty;
 			}
 		}
 		this.heuristic = heuristic;
 	}
-	
-	public boolean add(Player actual, Player enemy, Point loc){
+
+	private Board(Cell[][] board, int[][] heuristic) {
+		this.heuristic = heuristic;
+		for (int i = 0; i < board.length; i++) {
+			for (int w = 0; w < board[0].length; w++) {
+				this.board[i][w] = board[i][w];
+			}
+		}
+	}
+
+	public boolean add(Player actual, Player enemy, Point loc) {
 		setNewMoves(actual, enemy);
 		List<Point> directions = actual.getDirs(loc);
 		if (directions == null) {
@@ -81,7 +91,7 @@ public class Board {
 		board[loc.x][loc.y] = actual.getColor();
 		actual.incChips();
 		changed.add(loc);
-
+		notifyChange(loc, actual.getColor());
 	}
 
 	private void setChips(Point loc, Point dir, Player actual, Player enemy) {
@@ -94,7 +104,8 @@ public class Board {
 	}
 
 	public boolean inBorder(Point loc) {
-		if (loc.x >= 0 && loc.x < board.length && loc.y >= 0 && loc.y < board.length) {
+		if (loc.x >= 0 && loc.x < board.length && loc.y >= 0
+				&& loc.y < board.length) {
 			return true;
 		}
 		return false;
@@ -113,24 +124,25 @@ public class Board {
 
 					if (auxpos == Cell.Empty && getCell(loc) != Cell.Empty
 							&& getCell(loc) != actual.getColor()) {
-						auxp = checkLast(loc,
-								Point.antiDirection(new Point(i, w)), actual, 0);
+						auxp = checkLast(loc, Point.antiDirection(new Point(i,
+								w)), actual, 0);
 						if (auxp != null && getCell(auxp) == actual.getColor()) {
 							actual.addMove(new Point(loc.x + i, loc.y + w),
 									Point.antiDirection(new Point(i, w)));
 						}
-					} else if (auxpos != Cell.Empty && auxpos != actual.getColor()
+					} else if (auxpos != Cell.Empty
+							&& auxpos != actual.getColor()
 							&& getCell(loc) == actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == Cell.Empty) {
-							actual.addMove(auxp,
-									Point.antiDirection(new Point(i, w)));
+							actual.addMove(auxp, Point.antiDirection(new Point(
+									i, w)));
 						}
 					} else if (auxpos == actual.getColor()
 							&& getCell(loc) != actual.getColor()
 							&& getCell(loc) != Cell.Empty) {
-						auxp = checkLast(loc,
-								Point.antiDirection(new Point(i, w)), actual, 0);
+						auxp = checkLast(loc, Point.antiDirection(new Point(i,
+								w)), actual, 0);
 						if (auxp != null && getCell(auxp) == Cell.Empty) {
 							actual.addMove(auxp, new Point(i, w));
 						}
@@ -149,10 +161,11 @@ public class Board {
 	}
 
 	private Point checkLast(Point loc, Point dir, Player actual, int num) {
-		if (!inBorder (loc)) {
+		if (!inBorder(loc)) {
 			return null;
 		} else if (num != 0
-				&& (getCell(loc) == Cell.Empty || getCell(loc) == actual.getColor())) {
+				&& (getCell(loc) == Cell.Empty || getCell(loc) == actual
+						.getColor())) {
 			return loc;
 		}
 		return checkLast(loc.sumPoint(dir), dir, actual, num + 1);
@@ -210,10 +223,12 @@ public class Board {
 		}
 		return ret;
 	}
+
 	
 	public void add(int x, int y, Cell val){
 		board[x][y] = val;
 	}
+
 	
 	public void addAndTurn(int x, int y, Cell cell, ArrayList<Point> directionsToTurn){
 		boolean inBounds = true;
@@ -268,14 +283,14 @@ public class Board {
 										}
 										
 									}
-								
+
 								}
 							}
 						}
 					}
 				}
 			}
-			
+
 		}
 		HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
 		for(Point p: moves){
@@ -306,6 +321,7 @@ public class Board {
 								}
 								
 							}
+
 						}
 					}
 				}
@@ -314,4 +330,15 @@ public class Board {
 		return validMoves;
 	}
 
+	public Board clone() {
+		return new Board(board, heuristic);
+	}
+
+	public void notifyChange(Point p, Cell color) {
+		observer.updatePoint(p, color);
+	}
+
+	public void setObserver(MapObserver observer) {
+		this.observer = observer;
+	}
 }

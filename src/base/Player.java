@@ -7,17 +7,30 @@ import java.util.Set;
 
 public class Player {
 
-	
-	//TODO
+	// TODO
 	private HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
 	private HashMap<Point, ArrayList<Point>> possibleMoves;
 	private int chips = 0;
 	private Cell color;
 
-	public Player(Cell color){
+	private Player(Player data) {
+		for (Point a : data.validMoves.keySet()) {
+			for (Point b : data.validMoves.get(a)) {
+				if (!validMoves.containsKey(a)) {
+
+					validMoves.put(a, new ArrayList<Point>());
+				}
+				validMoves.get(a).add(b);
+			}
+		}
+		this.color = data.color;
+		this.chips = data.chips;
+	}
+
+	public Player(Cell color) {
 		this.color = color;
 	}
-	
+
 	public boolean checkValid(Point loc) {
 		if (validMoves.containsKey(loc)) {
 			return true;
@@ -62,16 +75,34 @@ public class Player {
 	public Set<Point> getFinalPoints() {
 		return validMoves.keySet();
 	}
-	
-	public int getChips(){
+
+	public int getChips() {
 		return chips;
 	}
-	
-	public int getMovesSize(){
+
+	public int getMovesSize() {
 		return validMoves.size();
 	}
-	
-	public Cell getColor(){
+
+	public Cell getColor() {
 		return color;
+	}
+
+	public Player clone() {
+		return new Player(this);
+
+	}
+	
+	public Point getRandPoint(){
+		int b = validMoves.keySet().size();
+		b = (int)(Math.random()*b);
+		int c =0;
+		for(Point a: validMoves.keySet()){
+			if(c == b){
+				return a;
+			}
+			c++;
+		}
+		return null;
 	}
 }
