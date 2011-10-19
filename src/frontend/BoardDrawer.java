@@ -5,7 +5,6 @@ import java.awt.Image;
 
 import javax.swing.JFrame;
 
-
 import base.Board;
 import base.Cell;
 import base.Game;
@@ -16,52 +15,65 @@ import gui.GamePanel;
 import gui.GamePanelListener;
 import gui.ImageUtils;
 
-public class BoardDrawer extends JFrame implements MapObserver{
+public class BoardDrawer extends JFrame implements MapObserver {
 
 	private GamePanel drawer;
 	private Image[] images = new Image[3];
 	private Game main;
-	
-	
-	public void newGame(Board table, Player human, Player enemy){
+	private boolean pturn;
+
+	public void newGame(Game game) {
+		this.main = game;
 		main.subscribe(this);
-		this.drawer = new GamePanel(8,8,50,new onClickListener(),Color.BLACK);
+
+		this.drawer = new GamePanel(8, 8, 50, new onClickListener(),
+				Color.WHITE);
+		loadImage();
 		setTitle("");
-		setSize(500, 500);
+		setSize(400, 500);
 		setResizable(false);
 		add(drawer);
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
-	
-	private class onClickListener implements GamePanelListener{
+	private class onClickListener implements GamePanelListener {
 
 		@Override
 		public void onMousePress(int row, int column) {
-			
+			if (pturn) {
+				pturn = false;
+			}
 		}
 	}
 
 	@Override
 	public void updatePoint(Point p, Cell color) {
-		if(color == Cell.Black){
-			drawer.put(images[2], p.getX(), p.getY());
-		}else{
-			drawer.put(images[1], p.getX(), p.getY());
+		if (color == Cell.Black) {
+			drawer.put(images[2], p.getY(), p.getX());
+		} else {
+			drawer.put(images[1], p.getY(), p.getX());
 		}
-	
+		repaint();
+
 	}
-	
-	public void loadImage(){
-		try{
-			images[0] = null;
-			images[1] = ImageUtils.loadImage("resources/red.jpg");
-			images[2] = ImageUtils.loadImage("resources/blue.jpg");
-		}catch(Exception e){
+
+	public void loadImage() {
+		try {
+			images[0] = ImageUtils.loadImage("resources/empty.png");
+			images[1] = ImageUtils.loadImage("resources/white.png");
+			images[2] = ImageUtils.loadImage("resources/black.png");
+		} catch (Exception e) {
+			System.out.println("lala");
 			e.printStackTrace();
 		}
 
+		for (int i = 0; i < 8; i++) {
+			for (int w = 0; w < 8; w++) {
+				drawer.put(images[0], w, i);
+			}
+		}
+
 	}
-	
+
 }

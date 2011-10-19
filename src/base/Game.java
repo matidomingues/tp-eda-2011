@@ -6,7 +6,7 @@ import java.io.FileReader;
 
 public abstract class Game {
 	protected Board board;
-	protected Player currentPlayer;
+	protected Cell currentPlayer;
 	protected int[][] heuristic;
 	protected MapObserver observer;
 	protected int n;
@@ -22,10 +22,7 @@ public abstract class Game {
 	public void setTreeMode(boolean value){
 		this.treeMode = value;
 	}
-	
-//	public void setPlayer(Player player){
-//		this.currentPlayer = player;
-//	}
+
 	
 	public void subscribe(MapObserver observer) {
 		this.observer = observer;
@@ -34,7 +31,7 @@ public abstract class Game {
 	public void notifyChange(Point p, Cell color) {
 		observer.updatePoint(p, color);
 	}
-
+	
 	public Board load(String filePath) throws Exception {
 		File file;
 		BufferedReader game;
@@ -93,4 +90,9 @@ public abstract class Game {
 		return board;
 	}
 
+
+	//TODO: hacer el finished
+	public boolean finished(){
+		return false;
+	}
 }
