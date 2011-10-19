@@ -41,6 +41,10 @@ public class Player {
 	public void setNewMoves() {
 		this.possibleMoves = new HashMap<Point, ArrayList<Point>>();
 	}
+	
+	public void setNewMoves(HashMap<Point, ArrayList<Point>> validMoves) {
+		this.validMoves = validMoves;
+	}
 
 	public void decChips() {
 		this.chips -= 1;
