@@ -135,6 +135,7 @@ public class Board {
 							actual.addMove(auxp, new Point(i, w));
 						}
 					} else if (getCell(loc) == Cell.Empty && auxpos != Cell.Empty
+
 							&& auxpos != actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == actual.getColor()) {
@@ -151,7 +152,7 @@ public class Board {
 		if (!inBorder (loc)) {
 			return null;
 		} else if (num != 0
-				&& (getCell(loc) == null || getCell(loc) == actual.getColor())) {
+				&& (getCell(loc) == Cell.Empty || getCell(loc) == actual.getColor())) {
 			return loc;
 		}
 		return checkLast(loc.sumPoint(dir), dir, actual, num + 1);
@@ -274,10 +275,10 @@ public class Board {
 								else{
 									if(board[pos.x][pos.y] == turn){
 										ar.add(new Point(i, j));
-										validMoves.put(new Point(pos.x, pos.y), ar);
+										validMoves.put(new Point(p.x, p.y), ar);
 										inBounds=false;
 									}
-									if(board[pos.x][pos.y] == Cell.Empty ){
+									else if(board[pos.x][pos.y] == Cell.Empty){
 										inBounds= false;
 									}
 								}

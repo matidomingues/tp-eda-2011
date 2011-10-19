@@ -8,9 +8,24 @@ public class Game {
 	private Player currentPlayer;
 	private int[][] heuristic;
 	private MapObserver observer;
+	private Player human;
+	private Player enemy;
 	
 	
-	
+	public void add(int x, int y, int player){
+		if(player == 1){
+			board.add(human, enemy, new Point(x,y));
+		}else{
+			board.add(enemy, human, new Point(x,y));
+		}
+	}
+	public void noCheckAdd(int x, int y, int player){
+		if(player == 1){
+			board.noCheckAdd(human, enemy, new Point(x,y));
+		}else{
+			board.noCheckAdd(enemy, human, new Point(x,y));
+		}
+	}
 	
 	public void subscribe(MapObserver observer){
 		this.observer = observer;
@@ -23,6 +38,8 @@ public class Game {
 	public Game(){
 		this.heuristic = this.createHeuristic();
 		this.board = new Board(heuristic);	
+		this.human = new Player(Cell.White);
+		this.enemy = new Player(Cell.Black);
 	}
 
 
@@ -90,4 +107,8 @@ public class Game {
 		return board;
 	}
 	
+	
+	public void print(){
+		board.printMap(human, enemy);
+	}
 }
