@@ -14,6 +14,10 @@ public class Player {
 	private int chips = 0;
 	private Cell color;
 
+	public Player(Cell color){
+		this.color = color;
+	}
+	
 	public boolean checkValid(Point loc) {
 		if (validMoves.containsKey(loc)) {
 			return true;
@@ -23,6 +27,10 @@ public class Player {
 
 	public void setNewMoves() {
 		this.possibleMoves = new HashMap<Point, ArrayList<Point>>();
+	}
+	
+	public void setNewMoves(HashMap<Point, ArrayList<Point>> validMoves) {
+		this.validMoves = validMoves;
 	}
 
 	public void decChips() {

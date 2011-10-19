@@ -111,7 +111,7 @@ public class Board {
 
 					auxpos = board[loc.x + i][loc.y + w];
 
-					if (auxpos == null && getCell(loc) != null
+					if (auxpos == Cell.Empty && getCell(loc) != Cell.Empty
 							&& getCell(loc) != actual.getColor()) {
 						auxp = checkLast(loc,
 								Point.antiDirection(new Point(i, w)), actual, 0);
@@ -119,22 +119,22 @@ public class Board {
 							actual.addMove(new Point(loc.x + i, loc.y + w),
 									Point.antiDirection(new Point(i, w)));
 						}
-					} else if (auxpos != null && auxpos != actual.getColor()
+					} else if (auxpos != Cell.Empty && auxpos != actual.getColor()
 							&& getCell(loc) == actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
-						if (auxp != null && getCell(auxp) == null) {
+						if (auxp != null && getCell(auxp) == Cell.Empty) {
 							actual.addMove(auxp,
 									Point.antiDirection(new Point(i, w)));
 						}
 					} else if (auxpos == actual.getColor()
 							&& getCell(loc) != actual.getColor()
-							&& getCell(loc) != null) {
+							&& getCell(loc) != Cell.Empty) {
 						auxp = checkLast(loc,
 								Point.antiDirection(new Point(i, w)), actual, 0);
-						if (auxp != null && getCell(auxp) == null) {
+						if (auxp != null && getCell(auxp) == Cell.Empty) {
 							actual.addMove(auxp, new Point(i, w));
 						}
-					} else if (getCell(loc) == null && auxpos != null
+					} else if (getCell(loc) == Cell.Empty && auxpos != Cell.Empty
 							&& auxpos != actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == actual.getColor()) {
@@ -211,7 +211,7 @@ public class Board {
 	}
 	
 	public void add(int x, int y, Cell val){
-		
+		board[x][y] = val;
 	}
 	
 	public HashMap<Point, ArrayList<Point>> moves(Cell turn){
@@ -222,25 +222,30 @@ public class Board {
 					for(int i=-1; i<2; i++){
 						for(int j=-1; j<2; j++){
 							Point pos = new Point(boardX+i, boardY+j);
-							Cell neighbor = board[pos.x][pos.y];
-							if(neighbor!=Cell.Empty && neighbor != turn){
-								boolean inBounds = true;
-								while(inBounds){
-									pos.x += i;
-									pos.y += j;
-									if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
-										inBounds = false;
-									}
-									else{
-										if(board[pos.x][pos.y] == Cell.Empty){
-											moves.add(new Point(pos.x, pos.y));
-											inBounds=false;
+							if( pos.x < board.length && pos.x >= 0 && pos.y < board.length && pos.y >=0){
+	
+								
+								Cell neighbor = board[pos.x][pos.y];
+								if(neighbor!=Cell.Empty && neighbor != turn){
+									boolean inBounds = true;
+									while(inBounds){
+										pos.x += i;
+										pos.y += j;
+										if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
+											inBounds = false;
 										}
-										if(board[pos.x][pos.y] == turn){
-											inBounds= false;
+										else{
+											if(board[pos.x][pos.y] == Cell.Empty){
+												moves.add(new Point(pos.x, pos.y));
+												inBounds=false;
+											}
+											if(board[pos.x][pos.y] == turn){
+												inBounds= false;
+											}
 										}
+										
 									}
-									
+								
 								}
 							}
 						}
@@ -253,28 +258,31 @@ public class Board {
 		for(Point p: moves){
 			for(int i=-1; i<2; i++){
 				for(int j=-1; j<2; j++){
-					Point pos = new Point(p.x, p.y);
-					Cell neighbor = board[pos.x][pos.y];
-					if(neighbor!=Cell.Empty && neighbor != turn){
-						boolean inBounds = true;
-						while(inBounds){
-							ArrayList<Point> ar = new ArrayList<Point>();
-							pos.x += i;
-							pos.y += j;
-							if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
-								inBounds = false;
-							}
-							else{
-								if(board[pos.x][pos.y] == turn){
-									ar.add(new Point(i, j));
-									validMoves.put(new Point(pos.x, pos.y), ar);
-									inBounds=false;
+					Point pos = new Point(p.x+i, p.y+j);
+					if( pos.x < board.length && pos.x >= 0 && pos.y < board.length && pos.y >=0){
+						
+						Cell neighbor = board[pos.x][pos.y];
+						if(neighbor!=Cell.Empty && neighbor != turn){
+							boolean inBounds = true;
+							while(inBounds){
+								ArrayList<Point> ar = new ArrayList<Point>();
+								pos.x += i;
+								pos.y += j;
+								if( pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0){
+									inBounds = false;
 								}
-								if(board[pos.x][pos.y] == Cell.Empty ){
-									inBounds= false;
+								else{
+									if(board[pos.x][pos.y] == turn){
+										ar.add(new Point(i, j));
+										validMoves.put(new Point(pos.x, pos.y), ar);
+										inBounds=false;
+									}
+									if(board[pos.x][pos.y] == Cell.Empty ){
+										inBounds= false;
+									}
 								}
+								
 							}
-							
 						}
 					}
 				}
