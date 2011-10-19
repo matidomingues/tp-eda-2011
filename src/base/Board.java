@@ -111,7 +111,7 @@ public class Board {
 
 					auxpos = board[loc.x + i][loc.y + w];
 
-					if (auxpos == null && getCell(loc) != null
+					if (auxpos == Cell.Black && getCell(loc) != Cell.Black
 							&& getCell(loc) != actual.getColor()) {
 						auxp = checkLast(loc,
 								Point.antiDirection(new Point(i, w)), actual, 0);
@@ -119,7 +119,7 @@ public class Board {
 							actual.addMove(new Point(loc.x + i, loc.y + w),
 									Point.antiDirection(new Point(i, w)));
 						}
-					} else if (auxpos != null && auxpos != actual.getColor()
+					} else if (auxpos != Cell.Black && auxpos != actual.getColor()
 							&& getCell(loc) == actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == null) {
@@ -128,13 +128,13 @@ public class Board {
 						}
 					} else if (auxpos == actual.getColor()
 							&& getCell(loc) != actual.getColor()
-							&& getCell(loc) != null) {
+							&& getCell(loc) != Cell.Black) {
 						auxp = checkLast(loc,
 								Point.antiDirection(new Point(i, w)), actual, 0);
 						if (auxp != null && getCell(auxp) == null) {
 							actual.addMove(auxp, new Point(i, w));
 						}
-					} else if (getCell(loc) == null && auxpos != null
+					} else if (getCell(loc) == Cell.Black && auxpos != null
 							&& auxpos != actual.getColor()) {
 						auxp = checkLast(loc, new Point(i, w), actual, 0);
 						if (auxp != null && getCell(auxp) == actual.getColor()) {
