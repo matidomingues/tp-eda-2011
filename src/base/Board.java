@@ -20,7 +20,7 @@ public class Board {
 		this.heuristic = heuristic;
 	}
 	
-	public boolean add(Player actual, Player enemy, Point loc) {
+	public boolean add(Player actual, Player enemy, Point loc){
 		setNewMoves(actual, enemy);
 		List<Point> directions = actual.getDirs(loc);
 		if (directions == null) {
