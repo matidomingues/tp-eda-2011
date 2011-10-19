@@ -4,10 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 
 public class Game {
-	private Board board;
-	private Player currentPlayer;
+	public Board board;
 	private int[][] heuristic;
-	private MapObserver observer;
 	private Player human;
 	private Player enemy;
 	
@@ -17,6 +15,7 @@ public class Game {
 			board.add(human, enemy, new Point(x,y));
 		}else{
 			board.add(enemy, human, new Point(x,y));
+			
 		}
 	}
 	public void noCheckAdd(int x, int y, int player){
@@ -28,12 +27,10 @@ public class Game {
 	}
 	
 	public void subscribe(MapObserver observer){
-		this.observer = observer;
+		board.setObserver(observer);
 	}
 	
-	public void notifyChange(Point p, Cell color){
-		observer.updatePoint(p, color);
-	}
+
 		
 	public Game(){
 		this.heuristic = this.createHeuristic();
@@ -110,5 +107,16 @@ public class Game {
 	
 	public void print(){
 		board.printMap(human, enemy);
+	}
+	
+	public void playAny(){
+		board.add(enemy, human, enemy.getRandPoint());
+	}
+	
+	public boolean finished(){
+		if(human.getMovesSize() == 0 && enemy.getMovesSize() == 0){
+			return true;
+		}
+		return false;
 	}
 }
