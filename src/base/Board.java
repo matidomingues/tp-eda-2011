@@ -215,6 +215,28 @@ public class Board {
 		board[x][y] = val;
 	}
 	
+	public void addAndTurn(int x, int y, Cell cell, ArrayList<Point> directionsToTurn){
+		boolean inBounds = true;
+		board[x][y]= cell;
+		int auX = x;
+		int auY = y;
+		for(Point p: directionsToTurn){
+			auX = x+p.x;
+			auY = y+p.y;
+			while(inBounds){
+				if( auX >= board.length || auX < 0 || auY >= board.length || auY < 0){
+					inBounds = false;
+				}
+				else if(board[auX][auY] != cell){
+					board[auX][auY]= cell;
+				}
+				else{
+					inBounds = false;
+				}
+			}
+		}
+		return;
+	}
 	public HashMap<Point, ArrayList<Point>> moves(Cell turn){
 		List<Point> moves = new ArrayList<Point>();
 		for(int boardX = 0; boardX < board.length; boardX++){
