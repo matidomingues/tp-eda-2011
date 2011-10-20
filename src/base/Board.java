@@ -2,6 +2,7 @@ package base;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Board {
@@ -111,12 +112,13 @@ public class Board {
 		setCell(p, color);
 		for (Point dir : directionsToTurn) {
 			setLine(p.sumPoint(dir), dir, color);
+			System.out.println(dir.x + " " + dir.y );
 		}
 		return;
 	}
 
 	public HashMap<Point, ArrayList<Point>> moves(Cell turn) {
-		List<Point> moves = new ArrayList<Point>();
+		HashSet<Point> moves = new HashSet<Point>();
 		for (int boardX = 0; boardX < board.length; boardX++) {
 			for (int boardY = 0; boardY < board.length; boardY++) {
 				if (board[boardX][boardY] == turn) {
@@ -159,6 +161,7 @@ public class Board {
 		}
 		HashMap<Point, ArrayList<Point>> validMoves = new HashMap<Point, ArrayList<Point>>();
 		for (Point p : moves) {
+			ArrayList<Point> ar = new ArrayList<Point>();
 			for (int i = -1; i < 2; i++) {
 				for (int j = -1; j < 2; j++) {
 					Point pos = new Point(p.x + i, p.y + j);
@@ -169,7 +172,7 @@ public class Board {
 						if (neighbor != Cell.Empty && neighbor != turn) {
 							boolean inBounds = true;
 							while (inBounds) {
-								ArrayList<Point> ar = new ArrayList<Point>();
+								
 								pos.x += i;
 								pos.y += j;
 								if (pos.x >= board.length || pos.x < 0
