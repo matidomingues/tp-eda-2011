@@ -13,6 +13,7 @@ import gui.GamePanel;
 import gui.GamePanelListener;
 import gui.ImageUtils;
 
+@SuppressWarnings("serial")
 public class BoardDrawer extends JFrame implements MapObserver {
 
 	private GamePanel drawer;
