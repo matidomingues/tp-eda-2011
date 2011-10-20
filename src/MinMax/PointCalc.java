@@ -13,6 +13,7 @@ public class PointCalc {
 		for (Point p : board.moves(actual).keySet()) {
 			board.add(p.getX(), p.getY(), actual);
 			aux = minDepth(board, depth - 1, null, enemy, actual);
+			System.out.println(" aux papa: " + aux);
 			if (value == null) {
 				value = aux;
 				actualMax = p;
@@ -45,7 +46,7 @@ public class PointCalc {
 
 	public Integer maxDepth(Board board, int depth, Integer value, Cell actual,
 			Cell enemy) {
-		Integer aux;
+		Integer aux = null;
 		if (depth == 0) {
 			return board.evaluateBoard(actual);
 		}
@@ -58,6 +59,11 @@ public class PointCalc {
 				value = aux;
 			}
 
+		}
+		if(value == null){
+			if(board.moves(enemy).keySet().size() == 0){
+				
+			}
 		}
 		return value;
 	}

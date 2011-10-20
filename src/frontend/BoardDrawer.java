@@ -109,6 +109,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				System.out.println(test);
 				main.playAny();
 				main.moves(1);
+				System.out.println(main.miniMax());
 				pmoves = main.gotMoves();
 				pturn = true;
 				System.out.println("");
