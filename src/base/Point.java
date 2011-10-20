@@ -31,21 +31,9 @@ public class Point {
 	}
 
 	public static Point antiDirection(Point p) {
-		Point newP = new Point();
-		if (p.x == 1) {
-			newP.x = -1;
-		} else if (p.x == 0) {
-			newP.x = 0;
-		} else {
-			newP.x = 1;
-		}
-		if (p.y == 1) {
-			newP.y = -1;
-		} else if (p.y == 0) {
-			newP.y = 0;
-		} else {
-			newP.y = 1;
-		}
+		Point newP = new Point(p.x,p.y);
+		newP.x *=(-1);
+		newP.y *=(-1);
 		return newP;
 	}
 
