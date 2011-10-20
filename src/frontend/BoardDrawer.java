@@ -87,6 +87,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 	}
 
 	public void start() {
+		Point test = null;
 		boolean pmoves= false , emoves= false;
 		main.moves(1);
 		pmoves = main.gotMoves();
@@ -94,7 +95,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 		while (pmoves || emoves) {
 			if (pturn) {
 				try {
-					Thread.sleep(10);
+					Thread.sleep(500);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -104,6 +105,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
+				System.out.println(test);
 				main.playAny();
 				main.moves(1);
 				pmoves = main.gotMoves();
