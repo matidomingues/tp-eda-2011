@@ -1,51 +1,44 @@
 package base;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class Game {
-	public Board board;
-	private int[][] heuristic;
-	private Player human;
-	private Player enemy;
-	
-	
-	public void add(int x, int y, Cell val){
-		board.add( x, y, val);
+public abstract class Game {
+	protected Board board;
+	protected Cell currentPlayer;
+	protected int[][] heuristic;
+	protected MapObserver observer;
+	protected int n;
+	protected boolean prune = false;
+	protected boolean treeMode = false;
+	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
+
+	public abstract Point miniMax();
+
+	public void setPrune(boolean value){
+		this.prune = value;
 	}
 	
-	public void add(int x, int y, int player){
-		if(player == 1){
-			board.add(human, enemy, new Point(x,y));
-		}else{
-			board.add(enemy, human, new Point(x,y));
-			
-		}
+	public void setTreeMode(boolean value){
+		this.treeMode = value;
 	}
-	public void noCheckAdd(int x, int y, int player){
-		if(player == 1){
-			board.noCheckAdd(human, enemy, new Point(x,y));
-		}else{
-			board.noCheckAdd(enemy, human, new Point(x,y));
-		}
+
+	public void addAndTurn(int x, int y){
+		board.addAndTurn(x, y, Cell.White, currentPlayerValidMoves.get(new Point(x,y)));
 	}
 	
-	public void subscribe(MapObserver observer){
+	public void subscribe(MapObserver observer) {
 		board.setObserver(observer);
 	}
-	
 
-		
-	public Game(){
-		this.heuristic = this.createHeuristic();
-		this.board = new Board(heuristic);	
-		this.human = new Player(Cell.White);
-		this.enemy = new Player(Cell.Black);
+	public void notifyChange(Point p, Cell color) {
+		observer.updatePoint(p, color);
 	}
-
-
-	public Board load (String filePath) throws Exception
-	{
+	
+	public Board load(String filePath) throws Exception {
 		File file;
 		BufferedReader game;
 		file = new File(filePath);
@@ -53,18 +46,14 @@ public class Game {
 		String line;
 		line = game.readLine();
 		Board gameBoard = new Board(heuristic);
-		for(int i = 0; i<8; i++){
-			for(int j = 0; j<8;j++){
-				if(line.charAt(j) == 1){
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
+				if (line.charAt(j) == 1) {
 					gameBoard.add(i, j, Cell.White);
-				}
-				else if(line.charAt(j) == 2){
-					gameBoard.add(i, j,Cell.Black);
-				}
-				else if(line.charAt(j) == ' '){
-					gameBoard.add(i, j,Cell.Empty);
-				}
-				else{
+				} else if (line.charAt(j) == 2) {
+					gameBoard.add(i, j, Cell.Black);
+				} else if (line.charAt(j) == ' ') {
+				} else {
 					throw new Exception();
 				}
 			}
@@ -74,21 +63,20 @@ public class Game {
 		return gameBoard;
 	}
 
-	
-	public int[][] createHeuristic(){
-		int [][] board = new int[8][8];
-		for( int i = 2; i <= 5; i++){
-			for(int j = 2; j <=5; j++){
+	public int[][] createHeuristic() {
+		int[][] board = new int[8][8];
+		for (int i = 2; i <= 5; i++) {
+			for (int j = 2; j <= 5; j++) {
 				board[i][j] = 3;
 			}
 		}
 		board[2][2] = board[2][5] = board[5][2] = board[5][5] = 15;
 		board[1][1] = board[1][6] = board[6][1] = board[6][6] = -40;
-		for(int j = 2; j <= 5; j++){
+		for (int j = 2; j <= 5; j++) {
 			board[1][j] = -5;
 			board[6][j] = -5;
 		}
-		for(int i = 2; i <= 5; i++){
+		for (int i = 2; i <= 5; i++) {
 			board[i][1] = -5;
 			board[i][6] = -5;
 		}
@@ -97,53 +85,43 @@ public class Game {
 		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -20;
 		board[0][2] = board[0][5] = board[2][0] = board[2][7] = 20;
 		board[5][0] = board[5][7] = board[7][1] = board[7][6] = 20;
-		for(int j = 3; j <= 4; j++){
+		for (int j = 3; j <= 4; j++) {
 			board[0][j] = 5;
 			board[7][j] = 5;
 		}
-		for(int i = 3; i <= 4; i++){
+		for (int i = 3; i <= 4; i++) {
 			board[i][0] = 5;
 			board[i][7] = 5;
-		}		
+		}
 		return board;
 	}
-	
-	
-	public void print(){
-		board.printMap(human, enemy);
-	}
-	
-	public void playAny(int actual){
-		if(actual == 1){
-			board.add(human, enemy, human.getRandPoint());
-		}else{
-			board.add(enemy, human, enemy.getRandPoint());
-		}
-	}
-	
-	public void playAny(Cell actual){
-		if(actual == Cell.Black){
-			human.setNewMoves(board.moves(Cell.Black));
-			Point p = human.getRandPoint();
-			if(human.getMovesSize()!= 0){
-			board.add(p.x, p.y, Cell.White);
-			}
-		}else{
-			enemy.setNewMoves(board.moves(Cell.White));
-			Point p = enemy.getRandPoint();
 
-			if(enemy.getMovesSize()!= 0){
-				board.add(p.x, p.y, Cell.Black);
+	public void playAny(){
+		int b = currentPlayerValidMoves.size();
+		b = (int)(Math.random()*b);
+		int c = 0;
+		for(Point a: currentPlayerValidMoves.keySet()){
+			if(c == b){
+				board.addAndTurn(a.x, a.y, Cell.Black, currentPlayerValidMoves.get(a));
 			}
 		}
 	}
 	
-	public boolean finished(){
-		if(human.getMovesSize() == 0 && enemy.getMovesSize() == 0){
+	public void initNewBoard(){
+		this.board.initNewBoard();
+	}
+	
+	public void moves(int player){
+		if(player == 1){
+			currentPlayerValidMoves = board.moves(Cell.White);
+		}else{
+			currentPlayerValidMoves = board.moves(Cell.Black);
+		}
+	}
+	public boolean isValidMove(int x, int y){
+		if(currentPlayerValidMoves.containsKey(new Point(x,y))){
 			return true;
 		}
 		return false;
 	}
-	
-
 }
