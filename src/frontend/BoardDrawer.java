@@ -88,7 +88,6 @@ public class BoardDrawer extends JFrame implements MapObserver {
 	}
 
 	public void start() {
-		Point test = null;
 		boolean pmoves= false , emoves= false;
 		main.moves(1);
 		pmoves = main.gotMoves();
@@ -106,10 +105,9 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
-				System.out.println(test);
+				System.out.println(main.miniMax());
 				main.playAny();
 				main.moves(1);
-				//System.out.println(main.miniMax());
 				pmoves = main.gotMoves();
 				pturn = true;
 				System.out.println("");

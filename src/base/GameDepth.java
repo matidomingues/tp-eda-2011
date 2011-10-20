@@ -17,8 +17,7 @@ public class GameDepth extends Game {
 	@Override
 	public Point miniMax() {
 		PointCalc test = new PointCalc();
-		test.getPointByDepth(board, n, Cell.White, Cell.Black);
-		return null;
+		return test.getPointByDepth(board, n, Cell.White, Cell.Black);
 	}
 
 	// MINIMAX BASADO EN DEPTH

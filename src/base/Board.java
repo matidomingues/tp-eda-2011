@@ -30,8 +30,9 @@ public class Board {
 
 	private Board(Cell[][] board, int[][] heuristic) {
 		this.heuristic = heuristic;
-		for (int i = 0; i < board.length; i++) {
-			for (int w = 0; w < board[0].length; w++) {
+		this.board = new Cell[8][8];
+		for (int i = 0; i < 8; i++) {
+			for (int w = 0; w < 8; w++) {
 				this.board[i][w] = board[i][w];
 			}
 		}
@@ -88,7 +89,6 @@ public class Board {
 
 	public void add(int x, int y, Cell val) {
 		board[x][y] = val;
-		notifyChange(new Point(x, y), val);
 	}
 
 	private void setCell(Point loc, Cell color) {
@@ -110,7 +110,6 @@ public class Board {
 		setCell(p, color);
 		for (Point dir : directionsToTurn) {
 			setLine(p.sumPoint(dir), dir, color);
-			System.out.println(dir.x + " " + dir.y );
 		}
 		return;
 	}

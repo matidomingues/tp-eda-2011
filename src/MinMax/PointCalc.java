@@ -10,14 +10,18 @@ public class PointCalc {
 	public Point getPointByDepth(Board board, int depth, Cell actual, Cell enemy) {
 		Integer aux = null, value = null;
 		Point actualMax = null;
+		for(Point p: board.moves(actual).keySet()){
+			System.out.println(p);
+		}
 		for (Point p : board.moves(actual).keySet()) {
-			board.add(p.getX(), p.getY(), actual);
-			aux = minDepth(board, depth - 1, null, enemy, actual);
+			Board newboard = board.clone();
+			newboard.add(p.getX(), p.getY(), actual);
+			aux = minDepth(newboard, depth - 1, null, enemy, actual);
 			System.out.println(" aux papa: " + aux);
 			if (value == null) {
 				value = aux;
 				actualMax = p;
-			} else if (value < aux) {
+			}else if (value < aux) {
 				value = aux;
 				actualMax = p;
 			}
@@ -32,14 +36,22 @@ public class PointCalc {
 			return board.evaluateBoard(actual);
 		}
 		for (Point p : board.moves(actual).keySet()) {
-			board.add(p.getX(), p.getY(), actual);
-			aux = maxDepth(board, depth - 1, value, enemy, actual);
+			Board newboard = board.clone();
+			newboard.add(p.getX(), p.getY(), actual);
+			aux = maxDepth(newboard, depth - 1, value, enemy, actual);
 			if (value == null) {
 				value = aux;
 			} else if (aux < value) {
 				value = aux;
 			}
 
+		}
+		if(value == null){
+			if(board.moves(enemy).keySet().size() != 0){
+				value = maxDepth(board,depth-1,value,enemy,actual);
+			}else{
+				return 2000;
+			}
 		}
 		return value;
 	}
@@ -51,8 +63,9 @@ public class PointCalc {
 			return board.evaluateBoard(actual);
 		}
 		for (Point p : board.moves(actual).keySet()) {
-			board.add(p.getX(), p.getY(), actual);
-			aux = maxDepth(board, depth - 1, value, enemy, actual);
+			Board newboard = board.clone();
+			newboard.add(p.getX(), p.getY(), actual);
+			aux = minDepth(newboard, depth - 1, value, enemy, actual);
 			if (value == null) {
 				value = aux;
 			} else if (aux > value) {
@@ -61,8 +74,10 @@ public class PointCalc {
 
 		}
 		if(value == null){
-			if(board.moves(enemy).keySet().size() == 0){
-				
+			if(board.moves(enemy).keySet().size() != 0){
+				value = minDepth(board,depth-1,value,enemy,actual);
+			}else{
+				return 2000;
 			}
 		}
 		return value;
