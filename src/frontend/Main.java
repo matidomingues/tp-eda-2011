@@ -19,10 +19,10 @@ public class Main {
 				}
 			}
 		}
-		test.add(enemy, human, new Point(0,0));
-		test.add(enemy,human,new Point(7,0));
-		test.add(enemy,human, new Point(7,7));
-		test.add(enemy,human, new Point(0,7));
+		//test.add(enemy, human, new Point(0,0));
+		//test.add(enemy,human,new Point(7,0));
+		//test.add(enemy,human, new Point(7,7));
+		//test.add(enemy,human, new Point(0,7));
 		long endtime = System.currentTimeMillis();
 		test.printMap(human, enemy);
 		System.out.println("tiempo en cargar: " + (endtime - starttime));
