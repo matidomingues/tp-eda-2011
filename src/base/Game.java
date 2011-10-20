@@ -18,18 +18,19 @@ public abstract class Game {
 
 	public abstract Point miniMax();
 
-	public void setPrune(boolean value){
+	public void setPrune(boolean value) {
 		this.prune = value;
 	}
-	
-	public void setTreeMode(boolean value){
+
+	public void setTreeMode(boolean value) {
 		this.treeMode = value;
 	}
 
-	public void addAndTurn(int x, int y){
-		board.addAndTurn(x, y, Cell.White, currentPlayerValidMoves.get(new Point(x,y)));
+	public void addAndTurn(int x, int y) {
+		board.addAndTurn(new Point(x,y), Cell.Black, currentPlayerValidMoves
+				.get(new Point(x, y)));
 	}
-	
+
 	public void subscribe(MapObserver observer) {
 		board.setObserver(observer);
 	}
@@ -37,7 +38,7 @@ public abstract class Game {
 	public void notifyChange(Point p, Cell color) {
 		observer.updatePoint(p, color);
 	}
-	
+
 	public Board load(String filePath) throws Exception {
 		File file;
 		BufferedReader game;
@@ -96,30 +97,44 @@ public abstract class Game {
 		return board;
 	}
 
-	public void playAny(){
+	public void playAny() {
 		int b = currentPlayerValidMoves.size();
-		b = (int)(Math.random()*b);
+		b = (int) (Math.random() * b);
 		int c = 0;
-		for(Point a: currentPlayerValidMoves.keySet()){
-			if(c == b){
-				board.addAndTurn(a.x, a.y, Cell.Black, currentPlayerValidMoves.get(a));
+		for (Point a : currentPlayerValidMoves.keySet()) {
+			if (c == b) {
+				board.addAndTurn(a, Cell.White, currentPlayerValidMoves
+						.get(a));
 			}
+			c++;
 		}
 	}
-	
-	public void initNewBoard(){
+
+	public void initNewBoard() {
 		this.board.initNewBoard();
 	}
-	
-	public void moves(int player){
-		if(player == 1){
-			currentPlayerValidMoves = board.moves(Cell.White);
-		}else{
+
+	public void moves(int player) {
+		if (player == 1) {
 			currentPlayerValidMoves = board.moves(Cell.Black);
+		} else {
+			currentPlayerValidMoves = board.moves(Cell.White);
 		}
 	}
-	public boolean isValidMove(int x, int y){
-		if(currentPlayerValidMoves.containsKey(new Point(x,y))){
+
+	public boolean isValidMove(int x, int y) {
+		if (currentPlayerValidMoves.containsKey(new Point(x, y))) {
+			return true;
+		}
+		return false;
+	}
+	
+	public void print(){
+		board.printMap(Cell.White, Cell.Black);
+	}
+	
+	public boolean gotMoves(){
+		if(currentPlayerValidMoves.keySet().size() != 0){
 			return true;
 		}
 		return false;

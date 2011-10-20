@@ -7,37 +7,37 @@ import base.GameTime;
 public class Main {
 
 	public static void main(String[] args) {
-		
+
 		Game game = null;
 
 		if (args.length < 3) {
 			System.out.println("Invalid arguments");
 			return;
 		}
-		try{
-		if (args[0].equals("-visual")) {
-			if (args[1].equals("-maxtime")) {
-				game = new GameTime(null, Integer.valueOf(args[2]));
-			} else if (args[1].equals("-depth")) {
-				game = new GameDepth(null, Integer.valueOf(args[2]));
-			} else {
-				System.out.println("Invalid arguments");
-				return;
-			}
-			if (args.length >= 4) {
-				if (args[3].equals("-prune")) {
-					game.setPrune(true);
-					if (args.length == 5) {
-						if (args[4].equals("-tree")) {
+		try {
+			if (args[0].equals("-visual")) {
+				if (args[1].equals("-maxtime")) {
+					game = new GameTime(null, Integer.valueOf(args[2]));
+				} else if (args[1].equals("-depth")) {
+					game = new GameDepth(null, Integer.valueOf(args[2]));
+				} else {
+					System.out.println("Invalid arguments");
+					return;
+				}
+				if (args.length >= 4) {
+					if (args[3].equals("-prune")) {
+						game.setPrune(true);
+						if (args.length == 5) {
+							if (args[4].equals("-tree")) {
+								game.setTreeMode(true);
+							}
+						} else if (args[3].equals("-tree")) {
 							game.setTreeMode(true);
 						}
-					} else if (args[3].equals("-tree")) {
-						game.setTreeMode(true);
 					}
 				}
-			}
-			BoardDrawer board = new BoardDrawer(game);
-			board.newGame();
+				BoardDrawer board = new BoardDrawer(game);
+				board.newGame();
 			} else if (args[0].equals("-file")) {
 				if (args[4].equals("-maxtime")) {
 					game = new GameTime(args[1], Integer.valueOf(args[5]));
@@ -61,12 +61,11 @@ public class Main {
 					return;
 				}
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		 System.out.println("Invalid File");
-		 return;
+			System.out.println("Invalid File");
+			return;
 		}
-		
 
 	}
 }

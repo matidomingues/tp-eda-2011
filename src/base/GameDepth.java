@@ -1,8 +1,8 @@
 package base;
 
-public class GameDepth extends Game{
+public class GameDepth extends Game {
 
-	public GameDepth(String filePath,int depth) throws Exception {
+	public GameDepth(String filePath, int depth) throws Exception {
 		this.heuristic = this.createHeuristic();
 		if (filePath == null) {
 			this.board = new Board(heuristic);
@@ -17,8 +17,7 @@ public class GameDepth extends Game{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	//MINIMAX BASADO EN DEPTH
-	
-	
+
+	// MINIMAX BASADO EN DEPTH
+
 }
