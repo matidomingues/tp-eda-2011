@@ -1,5 +1,9 @@
 package base;
 
+
+import MinMax.PointCalc;
+
+
 public class GameDepth extends Game {
 
 	public GameDepth(String filePath, int depth) throws Exception {
@@ -14,8 +18,10 @@ public class GameDepth extends Game {
 
 	@Override
 	public Point miniMax() {
-		// TODO Auto-generated method stub
-		return null;
+
+		PointCalc test = new PointCalc();
+		return test.getPointByDepth(board, n, Cell.White, Cell.Black);
+
 	}
 
 	// MINIMAX BASADO EN DEPTH
