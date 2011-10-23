@@ -16,8 +16,16 @@ public class GameDepth extends Game {
 
 	@Override
 	public Point miniMax() {
+		Point p;
 		PointCalc test = new PointCalc();
-		return test.getPointByDepth(board, n, Cell.White, Cell.Black);
+		p = test.getPointByDepth(board, n, Cell.White, Cell.Black);
+		for(Point a: currentPlayerValidMoves.get(p)){
+			System.out.println( "dir " + a);
+		}
+		System.out.println(currentPlayer);
+		board.addAndTurn(p, currentPlayer, currentPlayerValidMoves.get(p));
+		return p;
+	
 	}
 
 	// MINIMAX BASADO EN DEPTH

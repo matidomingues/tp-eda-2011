@@ -115,8 +115,10 @@ public abstract class Game {
 
 	public void moves(int player) {
 		if (player == 1) {
+			currentPlayer = Cell.Black;
 			currentPlayerValidMoves = board.moves(Cell.Black);
 		} else {
+			currentPlayer = Cell.White;
 			currentPlayerValidMoves = board.moves(Cell.White);
 		}
 	}

@@ -7,7 +7,10 @@ import base.Point;
 
 public class PointCalc {
 
+	protected Cell currentPlayer;
+	
 	public Point getPointByDepth(Board board, int depth, Cell actual, Cell enemy) {
+		this.currentPlayer = actual;
 		Integer aux = null, value = null;
 		Point actualMax = null;
 		for(Point p: board.moves(actual).keySet()){
@@ -17,6 +20,8 @@ public class PointCalc {
 			Board newboard = board.clone();
 			newboard.add(p.getX(), p.getY(), actual);
 			aux = minDepth(newboard, depth - 1, null, enemy, actual);
+			
+			
 			System.out.println(" aux papa: " + aux);
 			if (value == null) {
 				value = aux;
@@ -26,12 +31,13 @@ public class PointCalc {
 				actualMax = p;
 			}
 		}
+		
 		return actualMax;
 	}
 
 	public Integer minDepth(Board board, int depth, Integer value, Cell actual,
 			Cell enemy) {
-		int aux;
+		Integer aux = null, localmin = null;
 		if (depth == 0) {
 			return board.evaluateBoard(actual);
 		}
@@ -39,26 +45,33 @@ public class PointCalc {
 			Board newboard = board.clone();
 			newboard.add(p.getX(), p.getY(), actual);
 			aux = maxDepth(newboard, depth - 1, value, enemy, actual);
-			if (value == null) {
-				value = aux;
-			} else if (aux < value) {
-				value = aux;
-			}
 
+			if(localmin == null || localmin > aux ){
+				localmin = aux;
+			}
+			
+			if(depth != 1 && (value == null || localmin < value) ){
+				value = localmin;
+			} else if(value != null && localmin < value){
+				return localmin;
+			}
+			
+			
+			
 		}
-		if(value == null){
+		if(localmin == null){
 			if(board.moves(enemy).keySet().size() != 0){
-				value = maxDepth(board,depth-1,value,enemy,actual);
+				localmin = maxDepth(board,depth-1,value,enemy,actual);
 			}else{
-				return 2000;
+				return Integer.MAX_VALUE;
 			}
 		}
-		return value;
+		return localmin;
 	}
 
 	public Integer maxDepth(Board board, int depth, Integer value, Cell actual,
 			Cell enemy) {
-		Integer aux = null;
+		Integer aux = null, localmax = null;
 		if (depth == 0) {
 			return board.evaluateBoard(actual);
 		}
@@ -71,11 +84,26 @@ public class PointCalc {
 			} else if (aux > value) {
 				value = aux;
 			}
+		
+			
 
+			if(localmax == null || localmax < aux ){
+				localmax = aux;
+			}
+			
+			if(depth != 1 && (value == null || localmax > value) ){
+				value = localmax;
+			} else if(value != null && localmax > value){
+				return localmax;
+			}
+			
+			
+			
+			
 		}
-		if(value == null){
+		if(localmax  == null){
 			if(board.moves(enemy).keySet().size() != 0){
-				value = minDepth(board,depth-1,value,enemy,actual);
+				localmax = minDepth(board,depth-1,value,enemy,actual);
 			}else{
 				return 2000;
 			}
