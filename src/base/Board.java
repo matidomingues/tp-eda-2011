@@ -1,6 +1,7 @@
 package base;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Board {
@@ -78,9 +79,9 @@ public class Board {
 			for (int j = 0; j < board[0].length; j++) {
 				Cell color = board[i][j];
 				if (color == player) {
-					ret +=heuristic[i][j];
+					ret += heuristic[i][j];
 				} else if (color != Cell.Empty) {
-					ret -=heuristic[i][j];
+					ret -= heuristic[i][j];
 				}
 			}
 		}
@@ -124,7 +125,8 @@ public class Board {
 							Point pos = new Point(boardX + i, boardY + j);
 							if (pos.x < board.length && pos.x >= 0
 									&& pos.y < board.length && pos.y >= 0) {
-										checkNeighbors(pos, validMoves, turn, new Point(i, j));
+								checkNeighbors(pos, validMoves, turn,
+										new Point(i, j));
 							}
 						}
 					}
@@ -133,10 +135,9 @@ public class Board {
 		}
 		return validMoves;
 	}
-	
-	
-	
-	public void checkNeighbors(Point pos, HashMap<Point, ArrayList<Point>> validMoves, Cell turn, Point dir){
+
+	public void checkNeighbors(Point pos,
+			HashMap<Point, ArrayList<Point>> validMoves, Cell turn, Point dir) {
 
 		Cell neighbor = board[pos.x][pos.y];
 		if (neighbor != Cell.Empty && neighbor != turn) {
@@ -144,14 +145,14 @@ public class Board {
 			while (inBounds) {
 				pos.x += dir.x;
 				pos.y += dir.y;
-				if (pos.x >= board.length || pos.x < 0 || pos.y >= board.length || pos.y < 0) {
+				if (pos.x >= board.length || pos.x < 0 || pos.y >= board.length
+						|| pos.y < 0) {
 					inBounds = false;
 				} else {
 					if (board[pos.x][pos.y] == Cell.Empty) {
-						if(validMoves.containsKey(pos)){
+						if (validMoves.containsKey(pos)) {
 							validMoves.get(pos).add(Point.antiDirection(dir));
-						}
-						else{
+						} else {
 							validMoves.put(pos, new ArrayList<Point>());
 							validMoves.get(pos).add(Point.antiDirection(dir));
 						}
@@ -160,12 +161,11 @@ public class Board {
 					if (board[pos.x][pos.y] == turn) {
 						inBounds = false;
 					}
-					
+
 				}
 			}
 		}
 	}
-	
 
 	public Board clone() {
 		return new Board(board, heuristic);
@@ -178,4 +178,75 @@ public class Board {
 	public void setObserver(MapObserver observer) {
 		this.observer = observer;
 	}
+
+	public boolean compBoard(Cell[][] board) {
+
+		for (int i = 0; i < this.board.length; i++) {
+			for (int j = 0; j < this.board.length; j++) {
+				if (this.board[i][j] != board[i][j]) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public Cell[][] rotateBoard(Cell[][] board) {
+		Cell[][] ret = new Cell[this.board.length][this.board[0].length];
+
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				ret[j][board.length - j] = board[i][j];
+			}
+		}
+		return ret;
+	}
+
+	public Cell[][] transpBoard(Cell[][] board) {
+		Cell[][] ret = new Cell[this.board.length][this.board[0].length];
+
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				ret[j][i] = board[i][j];
+			
+			}
+		}
+		return ret;
+	}
+	
+	public boolean isSimetric(Cell[][] board){
+		for(int i = 0; i <= 3; i++){
+			if(this.compBoard(board)){
+				return true;
+			}
+			board = rotateBoard(board);
+			i++;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cell[][] other = ((Board) obj).board;
+		
+		if(this.isSimetric(other)){
+			return true;
+		}else{
+			other = transpBoard(other);
+			if(this.isSimetric(other)){
+				return true;
+			}			
+		}
+	
+		return false;
+	}
+	
+	
+
 }

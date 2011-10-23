@@ -6,7 +6,7 @@ import base.GameTime;
 
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String args[]) {
 
 		Game game = null;
 
@@ -55,7 +55,11 @@ public class Main {
 							game.setTreeMode(true);
 						}
 					}
-					// game.setPlayer(Integer.valueOf(args[3]);
+					try{
+					game.setPlayer(Integer.valueOf(args[3]));
+					}catch(Exception e){
+						System.out.println("Invalid arguments");
+					}
 				} else {
 					System.out.println("Invalid arguments");
 					return;

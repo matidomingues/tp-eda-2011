@@ -27,13 +27,12 @@ public class BoardDrawer extends JFrame implements MapObserver {
 
 	public void newGame() {
 		main.subscribe(this);
-
 		this.drawer = new GamePanel(8, 8, 50, new onClickListener(),
 				Color.WHITE);
 
 		loadImage();
 		main.initNewBoard();
-		setTitle("");
+		setTitle("Reversi");
 		setSize(400, 500);
 		setResizable(false);
 		add(drawer);

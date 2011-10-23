@@ -10,10 +10,10 @@ public abstract class Game {
 	protected Board board;
 	protected Cell currentPlayer;
 	protected int[][] heuristic;
-	protected MapObserver observer;
 	protected int n;
 	protected boolean prune = false;
 	protected boolean treeMode = false;
+	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
 	public abstract Point miniMax();
@@ -27,8 +27,8 @@ public abstract class Game {
 	}
 
 	public void addAndTurn(int x, int y) {
-		board.addAndTurn(new Point(x,y), Cell.Black, currentPlayerValidMoves
-				.get(new Point(x, y)));
+		board.addAndTurn(new Point(x, y), Cell.Black,
+				currentPlayerValidMoves.get(new Point(x, y)));
 	}
 
 	public void subscribe(MapObserver observer) {
@@ -96,15 +96,14 @@ public abstract class Game {
 		}
 		return board;
 	}
-
+	/* mueve al enemy a un lugar aleatorio permitido*/ 
 	public void playAny() {
 		int b = currentPlayerValidMoves.size();
 		b = (int) (Math.random() * b);
 		int c = 0;
 		for (Point a : currentPlayerValidMoves.keySet()) {
 			if (c == b) {
-				board.addAndTurn(a, Cell.White, currentPlayerValidMoves
-						.get(a));
+				board.addAndTurn(a, Cell.White, currentPlayerValidMoves.get(a));
 			}
 			c++;
 		}
@@ -128,15 +127,25 @@ public abstract class Game {
 		}
 		return false;
 	}
-	
-	public void print(){
+
+	public void print() {
 		board.printMap(Cell.White, Cell.Black);
 	}
-	
-	public boolean gotMoves(){
-		if(currentPlayerValidMoves.keySet().size() != 0){
+
+	public boolean gotMoves() {
+		if (currentPlayerValidMoves.keySet().size() != 0) {
 			return true;
 		}
 		return false;
+	}
+
+	public void setPlayer(int player) throws Exception {
+		if (player == 1) {
+			currentPlayer = Cell.Black;
+		} else if (player == 2) {
+			currentPlayer = Cell.White;
+		} else {
+			throw new IllegalArgumentException();
+		}
 	}
 }
