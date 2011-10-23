@@ -13,6 +13,7 @@ import gui.GamePanel;
 import gui.GamePanelListener;
 import gui.ImageUtils;
 
+@SuppressWarnings("serial")
 public class BoardDrawer extends JFrame implements MapObserver {
 
 	private GamePanel drawer;
@@ -94,9 +95,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 		while (pmoves || emoves) {
 			if (pturn) {
 				try {
-
 					Thread.sleep(500);
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -106,9 +105,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
-
 				System.out.println(main.miniMax());
-
 				main.playAny();
 				main.moves(1);
 				pmoves = main.gotMoves();

@@ -1,8 +1,6 @@
 package base;
 
-
 import MinMax.PointCalc;
-
 
 public class GameDepth extends Game {
 
@@ -18,10 +16,8 @@ public class GameDepth extends Game {
 
 	@Override
 	public Point miniMax() {
-
 		PointCalc test = new PointCalc();
 		return test.getPointByDepth(board, n, Cell.White, Cell.Black);
-
 	}
 
 	// MINIMAX BASADO EN DEPTH

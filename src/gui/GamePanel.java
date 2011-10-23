@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
+
 import javax.swing.JPanel;
 
 /**
@@ -48,7 +50,17 @@ public class GamePanel extends JPanel {
 
 			private Integer currentRow;
 			private Integer currentColumn;
-			
+
+			/*
+			 * @Override public void mouseMoved(MouseEvent e) { int row =
+			 * e.getY() / cellSize; int column = e.getX() / cellSize; if (row >=
+			 * rows || column >= columns || row < 0 || column < 0) { return; }
+			 * 
+			 * if (!nullSafeEquals(currentRow, row) ||
+			 * !nullSafeEquals(currentColumn, column)) { currentRow = row;
+			 * currentColumn = column; listener.onMousePress(row, column); } }
+			 */
+
 			private boolean nullSafeEquals(Object o1, Object o2) {
 				return o1 == null ? o2 == null : o1.equals(o2);
 			}

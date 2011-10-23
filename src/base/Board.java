@@ -48,6 +48,7 @@ public class Board {
 			return true;
 		}
 		return false;
+
 	}
 
 	/**
@@ -168,7 +169,6 @@ public class Board {
 
 	public Board clone() {
 		return new Board(board, heuristic);
-
 	}
 
 	public void notifyChange(Point p, Cell color) {
