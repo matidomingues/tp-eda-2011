@@ -96,7 +96,8 @@ public abstract class Game {
 		}
 		return board;
 	}
-	/* mueve al enemy a un lugar aleatorio permitido*/ 
+
+	/* mueve al enemy a un lugar aleatorio permitido */
 	public void playAny() {
 		int b = currentPlayerValidMoves.size();
 		b = (int) (Math.random() * b);
