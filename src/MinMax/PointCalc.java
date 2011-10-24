@@ -1,5 +1,11 @@
 package MinMax;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import testbiz.GraphViz;
+
 import base.Board;
 import base.Cell;
 
@@ -16,11 +22,15 @@ public class PointCalc {
 		for(Point p: board.moves(actual).keySet()){
 			System.out.println(p);
 		}
+		Node main = new Node(board,null);
+		
 		for (Point p : board.moves(actual).keySet()) {
 			Board newboard = board.clone();
 			newboard.add(p.getX(), p.getY(), actual);
-			aux = minDepth(newboard, depth - 1, null, enemy, actual);
-			
+			Node nodeaux = new Node(newboard,p);
+			aux = minDepth(newboard, depth - 1, null, enemy, actual, nodeaux);
+			nodeaux.value = aux;
+			main.sig.add(nodeaux);
 			
 			System.out.println(" aux papa: " + aux);
 			if (value == null) {
@@ -31,12 +41,12 @@ public class PointCalc {
 				actualMax = p;
 			}
 		}
-		
+		printminmax(main);
 		return actualMax;
 	}
 
 	public Integer minDepth(Board board, int depth, Integer value, Cell actual,
-			Cell enemy) {
+			Cell enemy, Node head) {
 		Integer aux = null, localmin = null;
 		if (depth == 0) {
 			return board.evaluateBoard(actual);
@@ -44,8 +54,10 @@ public class PointCalc {
 		for (Point p : board.moves(actual).keySet()) {
 			Board newboard = board.clone();
 			newboard.add(p.getX(), p.getY(), actual);
-			aux = maxDepth(newboard, depth - 1, value, enemy, actual);
-
+			Node nodeaux = new Node(newboard,p);
+			aux = maxDepth(newboard, depth - 1, value, enemy, actual, nodeaux);
+			nodeaux.value = aux;
+			head.sig.add(nodeaux);
 			if(localmin == null || localmin > aux ){
 				localmin = aux;
 			}
@@ -61,7 +73,7 @@ public class PointCalc {
 		}
 		if(localmin == null){
 			if(board.moves(enemy).keySet().size() != 0){
-				localmin = maxDepth(board,depth-1,value,enemy,actual);
+				localmin = maxDepth(board,depth-1,value,enemy,actual, head);
 			}else{
 				return Integer.MAX_VALUE;
 			}
@@ -70,7 +82,7 @@ public class PointCalc {
 	}
 
 	public Integer maxDepth(Board board, int depth, Integer value, Cell actual,
-			Cell enemy) {
+			Cell enemy, Node head) {
 		Integer aux = null, localmax = null;
 		if (depth == 0) {
 			return board.evaluateBoard(actual);
@@ -78,7 +90,10 @@ public class PointCalc {
 		for (Point p : board.moves(actual).keySet()) {
 			Board newboard = board.clone();
 			newboard.add(p.getX(), p.getY(), actual);
-			aux = minDepth(newboard, depth - 1, value, enemy, actual);
+			Node nodeaux = new Node(newboard, p);
+			aux = minDepth(newboard, depth - 1, value, enemy, actual, nodeaux);
+			nodeaux.value = aux;
+			head.sig.add(nodeaux);
 			if (value == null) {
 				value = aux;
 			} else if (aux > value) {
@@ -103,7 +118,7 @@ public class PointCalc {
 		}
 		if(localmax  == null){
 			if(board.moves(enemy).keySet().size() != 0){
-				localmax = minDepth(board,depth-1,value,enemy,actual);
+				localmax = minDepth(board,depth-1,value,enemy,actual, head);
 			}else{
 				return 2000;
 			}
@@ -111,6 +126,64 @@ public class PointCalc {
 		return value;
 	}
 
+	
+	private static class Node{
+		Board board;
+		Point p;
+		Integer value;
+		List<Node> sig;
+
+		public Node(Board board, Point p){
+			this.board = board;
+			this.p = p;
+
+			this.sig = new ArrayList<Node>();
+		}
+	}
+	
+	 public void printminmax(Node head){
+		 GraphViz gv = new GraphViz();
+		 
+	      gv.addln(gv.start_graph());
+	      printminmax(head,gv);
+	      gv.addln(gv.end_graph());
+	      System.out.println(gv.getDotSource());
+	   
+	      File out = new File("c:/dot.dot");    // Windows
+	      gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), ".dot" ), out );
+	 
+	 }
+	
+	private void printminmax(Node head, GraphViz gv){
+		if(head == null){
+			return;
+		}
+		for(Node a: head.sig){
+			if(head.p == null){
+				gv.addln("null" + "b" + a.value +  " -> " + a.p.getX()+"a"+ a.p.getY() + "b" + a.value+ ";" );	
+			}else{
+				gv.addln(head.p.getX()+"a"+head.p.getY() + "b" + a.value +  " -> " + a.p.getX()+"a"+ a.p.getY() + "b" + a.value+ ";" );
+			}
+		
+			printminmax(a, gv);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	public Point getPointByTime(Board board, int time, Cell actual, Cell enemy) {
 		Point actualBest = null, actualaux = null;
 		int i = 1;

@@ -1,5 +1,6 @@
 package base;
 
+import testbiz.GraphViz;
 import MinMax.PointCalc;
 
 public class GameDepth extends Game {
@@ -27,6 +28,8 @@ public class GameDepth extends Game {
 		return p;
 	
 	}
+
+	
 
 	// MINIMAX BASADO EN DEPTH
 
