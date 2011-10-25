@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax();
+	public abstract Point miniMax(Board board, int n, Cell currentPlayer);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -116,8 +116,10 @@ public abstract class Game {
 
 	public void moves(int player) {
 		if (player == 1) {
+			currentPlayer = Cell.Black;
 			currentPlayerValidMoves = board.moves(Cell.Black);
 		} else {
+			currentPlayer = Cell.White;
 			currentPlayerValidMoves = board.moves(Cell.White);
 		}
 	}
