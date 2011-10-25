@@ -1,7 +1,7 @@
 package base;
 
 public class GameTime extends Game {
-
+	
 	public GameTime(String filePath,int time ) throws Exception {
 		this.heuristic = this.createHeuristic();
 		if (filePath == null) {
@@ -13,10 +13,18 @@ public class GameTime extends Game {
 	}
 
 	@Override
-	public Point miniMax() {
-		// TODO Auto-generated method stub
+	public Point miniMax() { 
+		
 		return null;
 	}
+
+
 	
 	//MINIMAX BASADO EN TIME
+	
+	private class Node{
+		private Board board;
+		private int value = 0;
+	}
+
 }

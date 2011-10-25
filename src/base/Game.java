@@ -150,4 +150,11 @@ public abstract class Game {
 			throw new IllegalArgumentException();
 		}
 	}
+	
+	public boolean gameEnded(Board board){
+		if(board.moves(Cell.Black).isEmpty() && board.moves(Cell.White).isEmpty()){
+			return true;
+		}
+		else return false;
+	}
 }
