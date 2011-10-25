@@ -20,6 +20,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 	private Image[] images = new Image[3];
 	private Game main;
 	private boolean pturn = false;
+	
 
 	public BoardDrawer(Game game) {
 		this.main = game;
@@ -113,6 +114,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				main.print();
 			}
 		}
+		
 
 	}
 

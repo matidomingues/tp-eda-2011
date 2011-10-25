@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax();
+	public abstract Point miniMax(Board board, int n, Cell currentPlayer);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -96,7 +96,8 @@ public abstract class Game {
 		}
 		return board;
 	}
-	/* mueve al enemy a un lugar aleatorio permitido*/ 
+
+	/* mueve al enemy a un lugar aleatorio permitido */
 	public void playAny() {
 		int b = currentPlayerValidMoves.size();
 		b = (int) (Math.random() * b);

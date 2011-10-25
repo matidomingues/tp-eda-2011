@@ -24,18 +24,14 @@ public class Main {
 					System.out.println("Invalid arguments");
 					return;
 				}
-				if (args.length >= 4) {
+				if (args.length == 4) {
 					if (args[3].equals("-prune")) {
 						game.setPrune(true);
-						if (args.length == 5) {
-							if (args[4].equals("-tree")) {
-								game.setTreeMode(true);
-							}
-						} else if (args[3].equals("-tree")) {
-							game.setTreeMode(true);
-						}
+					} else {
+						System.out.println("Invalid arguments");
 					}
 				}
+
 				BoardDrawer board = new BoardDrawer(game);
 				board.newGame();
 			} else if (args[0].equals("-file")) {
@@ -45,19 +41,23 @@ public class Main {
 					game = new GameDepth(args[1], Integer.valueOf(args[5]));
 				}
 				if (args.length >= 7) {
-					if (args[6].equals("-prune")) {
-						game.setPrune(true);
+					if (args[6].equals("-tree")) {
+						game.setTreeMode(true);
+					} else {
 						if (args.length == 8) {
+							if (args[6].equals("-prune")) {
+								game.setPrune(true);
+							}
 							if (args[7].equals("-tree")) {
 								game.setTreeMode(true);
+							} else {
+								System.out.println("Invalid arguments");
 							}
-						} else if (args[6].equals("-tree")) {
-							game.setTreeMode(true);
 						}
 					}
-					try{
-					game.setPlayer(Integer.valueOf(args[3]));
-					}catch(Exception e){
+					try {
+						game.setPlayer(Integer.valueOf(args[3]));
+					} catch (Exception e) {
 						System.out.println("Invalid arguments");
 					}
 				} else {

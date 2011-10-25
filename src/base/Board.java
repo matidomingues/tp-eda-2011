@@ -9,6 +9,8 @@ public class Board {
 	private Cell[][] board;
 	private int[][] heuristic;
 	private MapObserver observer;
+	private int cantBlack = 0;
+	private int cantWhite = 0;
 
 	public Board(int[][] heuristic) {
 		this.board = new Cell[8][8];
@@ -22,7 +24,9 @@ public class Board {
 
 	public void initNewBoard() {
 		board[3][3] = board[4][4] = Cell.White;
+		cantWhite += 2;
 		board[3][4] = board[4][3] = Cell.Black;
+		cantBlack += 2;
 		notifyChange(new Point(3, 3), Cell.White);
 		notifyChange(new Point(4, 4), Cell.White);
 		notifyChange(new Point(3, 4), Cell.Black);
@@ -93,8 +97,23 @@ public class Board {
 	}
 
 	private void setCell(Point loc, Cell color) {
-		board[loc.x][loc.y] = color;
-		notifyChange(loc, color);
+		if(board[loc.x][loc.y] != color){
+			if(board[loc.x][loc.y] == Cell.Empty){
+				switch(color){
+				case White: cantWhite++;
+				case Black: cantBlack++;
+				}
+			}else{
+				switch(color){
+				case White: cantWhite++;
+							cantBlack--;
+				case Black: cantBlack++;
+							cantWhite--;
+				}	
+			}
+			board[loc.x][loc.y] = color;
+			notifyChange(loc, color);
+		}
 	}
 
 	private void setLine(Point loc, Point dir, Cell color) {
@@ -247,6 +266,8 @@ public class Board {
 		return false;
 	}
 	
-	
+	public Cell[][] getBoard(){
+		return board;
+	}
 
 }
