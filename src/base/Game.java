@@ -195,8 +195,8 @@ public abstract class Game {
 		}
 		if (black > white) {
 			return Cell.Black;
-		} else if (black == white) {
+		} else
 			return Cell.Empty;
-		}
+		
 	}
 }
