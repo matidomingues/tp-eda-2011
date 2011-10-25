@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax(Board board,int n, Cell player);
+	public abstract Point miniMax(Board board, int n, Cell player);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -94,25 +94,25 @@ public abstract class Game {
 			board[i][0] = 5;
 			board[i][7] = 5;
 		}
-		
+
 		System.out.println("HEURISTICA");
-		for(int i = 0; i<8;i++){
-			for(int j=0;j<8;j++){
+		for (int i = 0; i < 8; i++) {
+			for (int j = 0; j < 8; j++) {
 				System.out.print(board[i][j] + "  ");
-				
+
 			}
 			System.out.println("");
 		}
 		return board;
 	}
 
-	
 	public void play() {
-		Point pointToPlay = miniMax(board,n,currentPlayer);
+		Point pointToPlay = miniMax(board, n, currentPlayer);
 		System.out.println("POINT TO PLAY:  " + pointToPlay);
-		if(pointToPlay != null){
-			board.addAndTurn(pointToPlay, Cell.White, currentPlayerValidMoves.get(pointToPlay));
-		}		
+		if (pointToPlay != null) {
+			board.addAndTurn(pointToPlay, Cell.White,
+					currentPlayerValidMoves.get(pointToPlay));
+		}
 	}
 
 	public void initNewBoard() {
@@ -156,20 +156,47 @@ public abstract class Game {
 			throw new IllegalArgumentException();
 		}
 	}
-	public Board getBoard(){
+
+	public Board getBoard() {
 		return board;
 	}
-	
-	public Cell getCurrentPlayer(){
+
+	public Cell getCurrentPlayer() {
 		return currentPlayer;
 	}
-	public int getN(){
+
+	public int getN() {
 		return n;
 	}
-	public boolean gameEnded(Board board){
-		if(board.moves(Cell.Black).isEmpty() && board.moves(Cell.White).isEmpty()){
+
+	public boolean gameEnded(Board board) {
+		if (board.moves(Cell.Black).isEmpty()
+				&& board.moves(Cell.White).isEmpty()) {
 			return true;
+		} else
+			return false;
+	}
+
+	public Cell winner() {
+		int white = 0;
+		int black = 0;
+
+		for (int i = 0; i < board.getBoard().length; i++) {
+			for (int j = 0; j < board.getBoard().length; j++) {
+				if (board.getBoard()[i][j] == Cell.Black) {
+					black++;
+				} else if (board.getBoard()[i][j] == Cell.White) {
+					white++;
+				}
+			}
 		}
-		else return false;
+		if (white > black) {
+			return Cell.White;
+		}
+		if (black > white) {
+			return Cell.Black;
+		} else if (black == white) {
+			return Cell.Empty;
+		}
 	}
 }
