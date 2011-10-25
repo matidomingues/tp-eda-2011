@@ -1,7 +1,5 @@
 package base;
 
-import MinMax.PointCalc;
-
 public class GameDepth extends Game {
 
 	public GameDepth(String filePath, int depth) throws Exception {
@@ -15,6 +13,7 @@ public class GameDepth extends Game {
 	}
 	
 	public Point miniMax(Board board, int depth, Cell player){
+
 		Point point = null;
 		int euristic = Integer.MIN_VALUE;
 		int i = 0;
