@@ -70,6 +70,13 @@ public class GameDepth extends Game {
 			return beta;
 		}
 	}
+
+	@Override
+	public Point miniMax (Board board, int n, Cell currentPlayer)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
 		
 	
 	

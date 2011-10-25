@@ -12,11 +12,6 @@ public class GameTime extends Game {
 		this.n = time;
 	}
 
-	@Override
-	public Point miniMax() { 
-		
-		return null;
-	}
 
 
 	
@@ -26,5 +21,14 @@ public class GameTime extends Game {
 		private Board board;
 		private int value = 0;
 	}
+
+
+
+	@Override
+	public Point miniMax (Board board, int n, Cell currentPlayer)
+		{
+			// TODO Auto-generated method stub
+			return null;
+		}
 
 }
