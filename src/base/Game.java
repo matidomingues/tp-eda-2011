@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax(Board board, int n, Cell currentPlayer);
+	public abstract Point miniMax(Board board,int n, Cell player);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -97,17 +97,12 @@ public abstract class Game {
 		return board;
 	}
 
-	/* mueve al enemy a un lugar aleatorio permitido */
-	public void playAny() {
-		int b = currentPlayerValidMoves.size();
-		b = (int) (Math.random() * b);
-		int c = 0;
-		for (Point a : currentPlayerValidMoves.keySet()) {
-			if (c == b) {
-				board.addAndTurn(a, Cell.White, currentPlayerValidMoves.get(a));
-			}
-			c++;
-		}
+	
+	public void play() {
+		Point pointToPlay = miniMax(board,n,currentPlayer);
+		if(pointToPlay != null){
+			board.addAndTurn(pointToPlay, Cell.White, currentPlayerValidMoves.get(pointToPlay));
+		}		
 	}
 
 	public void initNewBoard() {
@@ -150,5 +145,15 @@ public abstract class Game {
 		} else {
 			throw new IllegalArgumentException();
 		}
+	}
+	public Board getBoard(){
+		return board;
+	}
+	
+	public Cell getCurrentPlayer(){
+		return currentPlayer;
+	}
+	public int getN(){
+		return n;
 	}
 }

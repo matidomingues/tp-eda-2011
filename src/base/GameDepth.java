@@ -14,22 +14,8 @@ public class GameDepth extends Game {
 		}
 		this.n = depth;
 	}
-
-//	@Override
-//	public Point miniMax() {
-//		Point p;
-//		PointCalc test = new PointCalc();
-//		p = test.getPointByDepth(board, n, Cell.White, Cell.Black);
-//		for(Point a: currentPlayerValidMoves.get(p)){
-//			System.out.println( "dir " + a);
-//		}
-//		System.out.println(currentPlayer);
-//		board.addAndTurn(p, currentPlayer, currentPlayerValidMoves.get(p));
-//		return p;
-//	
-//	}
 	
-	public Point minimax(Board board, int depth, Cell player){
+	public Point miniMax(Board board, int depth, Cell player){
 		Point point = null;
 		int euristic = Integer.MIN_VALUE;
 		for(Point p: board.moves(player).keySet()){
@@ -44,7 +30,7 @@ public class GameDepth extends Game {
 		
 	}
 	
-	public int minimax(Board board,int depth,int alpha,int beta, Cell player){
+	private int minimax(Board board,int depth,int alpha,int beta, Cell player){
 		if(depth == 0 || gameEnded(board)){
 			board.evaluateBoard(player);
 		}
@@ -86,5 +72,4 @@ public class GameDepth extends Game {
 //		}
 //		
 //	}
-
 }
