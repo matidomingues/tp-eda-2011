@@ -38,7 +38,7 @@ public class GameDepth extends Game {
 	
 	private int minimax(Board board,int depth,int alpha,int beta, Cell player){
 		if(depth == 0 || gameEnded(board)){
-			return board.evaluateBoard(player);
+			return board.evaluateBoard(currentPlayer);
 		}
 		if(player == currentPlayer){
 			for(Point p: board.moves(player).keySet()){
