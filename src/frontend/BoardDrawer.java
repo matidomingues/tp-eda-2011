@@ -114,7 +114,8 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				main.print();
 			}
 		}
-		
+		Cell winner = main.winner();
+		//imprimir cartel con ganador y terminar aplicacion
 
 	}
 
