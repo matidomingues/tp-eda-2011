@@ -1,5 +1,9 @@
 package frontend;
 
+import gui.GamePanel;
+import gui.GamePanelListener;
+import gui.ImageUtils;
+
 import java.awt.Color;
 import java.awt.Image;
 
@@ -9,9 +13,6 @@ import base.Cell;
 import base.Game;
 import base.MapObserver;
 import base.Point;
-import gui.GamePanel;
-import gui.GamePanelListener;
-import gui.ImageUtils;
 
 @SuppressWarnings("serial")
 public class BoardDrawer extends JFrame implements MapObserver {
@@ -105,8 +106,8 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
-				System.out.println(main.miniMax());
-				//main.playAny();
+				//System.out.println(main.miniMax(main.getBoard(),main.getN(),main.getCurrentPlayer()));
+				main.play();
 				main.moves(1);
 				pmoves = main.gotMoves();
 				pturn = true;

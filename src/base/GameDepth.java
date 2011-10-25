@@ -11,40 +11,33 @@ public class GameDepth extends Game {
 		}
 		this.n = depth;
 	}
-
-//	@Override
-//	public Point miniMax() {
-//		Point p;
-//		PointCalc test = new PointCalc();
-//		p = test.getPointByDepth(board, n, Cell.White, Cell.Black);
-//		for(Point a: currentPlayerValidMoves.get(p)){
-//			System.out.println( "dir " + a);
-//		}
-//		System.out.println(currentPlayer);
-//		board.addAndTurn(p, currentPlayer, currentPlayerValidMoves.get(p));
-//		return p;
-//	
-//	}
 	
-	public Point minimax(Board board, int depth, Cell player){
-		
+	public Point miniMax(Board board, int depth, Cell player){
+
 		Point point = null;
 		int euristic = Integer.MIN_VALUE;
+		int i = 0;
+		System.out.println("MIN_VALUE: " + Integer.MIN_VALUE);
 		for(Point p: board.moves(player).keySet()){
+			System.out.println("nodo: " + i++);
+			System.out.println("Point: " + p);
 			Board child = board.clone();
 			child.add(p.getX(), p.getY(), player);
-			int euristicPoint = minimax(board,depth-1,Integer.MIN_VALUE,Integer.MIN_VALUE, player.oposite());
+			int euristicPoint = minimax(child,depth-1,Integer.MIN_VALUE,Integer.MAX_VALUE, player.oposite());
+			System.out.println("EuristicPoint: " + euristicPoint);
+			System.out.println("Euristic: " + euristic);
 			if(euristic <= euristicPoint){
 				point = p;
+				euristic = euristicPoint;
 			}			
 		}
 		return point;		
 		
 	}
 	
-	public int minimax(Board board,int depth,int alpha,int beta, Cell player){
+	private int minimax(Board board,int depth,int alpha,int beta, Cell player){
 		if(depth == 0 || gameEnded(board)){
-			board.evaluateBoard(player);
+			return board.evaluateBoard(currentPlayer);
 		}
 		if(player == currentPlayer){
 			for(Point p: board.moves(player).keySet()){
@@ -69,27 +62,4 @@ public class GameDepth extends Game {
 			return beta;
 		}
 	}
-
-	@Override
-	public Point miniMax (Board board, int n, Cell currentPlayer)
-		{
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
-	
-	
-//	
-//	private class Node{
-//		private int value;
-//		private Point point;
-//		private Board board;
-//	
-//		public Node(Point point, Board board){
-//			this.point = point;
-//			this.board = board;
-//		}
-//		
-//	}
-
 }

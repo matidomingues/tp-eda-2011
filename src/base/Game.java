@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax(Board board, int n, Cell currentPlayer);
+	public abstract Point miniMax(Board board,int n, Cell player);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -72,7 +72,7 @@ public abstract class Game {
 			}
 		}
 		board[2][2] = board[2][5] = board[5][2] = board[5][5] = 15;
-		board[1][1] = board[1][6] = board[6][1] = board[6][6] = -40;
+		board[1][1] = board[1][6] = board[6][1] = board[6][6] = -50;
 		for (int j = 2; j <= 5; j++) {
 			board[1][j] = -5;
 			board[6][j] = -5;
@@ -82,10 +82,10 @@ public abstract class Game {
 			board[i][6] = -5;
 		}
 		board[0][0] = board[0][7] = board[7][0] = board[7][7] = 120;
-		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -20;
-		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -20;
+		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -30;
+		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -30;
 		board[0][2] = board[0][5] = board[2][0] = board[2][7] = 20;
-		board[5][0] = board[5][7] = board[7][1] = board[7][6] = 20;
+		board[5][0] = board[5][7] = board[7][2] = board[7][5] = 20;
 		for (int j = 3; j <= 4; j++) {
 			board[0][j] = 5;
 			board[7][j] = 5;
@@ -94,20 +94,25 @@ public abstract class Game {
 			board[i][0] = 5;
 			board[i][7] = 5;
 		}
+		
+		System.out.println("HEURISTICA");
+		for(int i = 0; i<8;i++){
+			for(int j=0;j<8;j++){
+				System.out.print(board[i][j] + "  ");
+				
+			}
+			System.out.println("");
+		}
 		return board;
 	}
 
-	/* mueve al enemy a un lugar aleatorio permitido */
-	public void playAny() {
-		int b = currentPlayerValidMoves.size();
-		b = (int) (Math.random() * b);
-		int c = 0;
-		for (Point a : currentPlayerValidMoves.keySet()) {
-			if (c == b) {
-				board.addAndTurn(a, Cell.White, currentPlayerValidMoves.get(a));
-			}
-			c++;
-		}
+	
+	public void play() {
+		Point pointToPlay = miniMax(board,n,currentPlayer);
+		System.out.println("POINT TO PLAY:  " + pointToPlay);
+		if(pointToPlay != null){
+			board.addAndTurn(pointToPlay, Cell.White, currentPlayerValidMoves.get(pointToPlay));
+		}		
 	}
 
 	public void initNewBoard() {
@@ -151,7 +156,16 @@ public abstract class Game {
 			throw new IllegalArgumentException();
 		}
 	}
+	public Board getBoard(){
+		return board;
+	}
 	
+	public Cell getCurrentPlayer(){
+		return currentPlayer;
+	}
+	public int getN(){
+		return n;
+	}
 	public boolean gameEnded(Board board){
 		if(board.moves(Cell.Black).isEmpty() && board.moves(Cell.White).isEmpty()){
 			return true;
