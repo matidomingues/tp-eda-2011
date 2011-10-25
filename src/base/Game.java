@@ -100,6 +100,7 @@ public abstract class Game {
 	
 	public void play() {
 		Point pointToPlay = miniMax(board,n,currentPlayer);
+		System.out.println("POINT TO PLAY:  " + pointToPlay);
 		if(pointToPlay != null){
 			board.addAndTurn(pointToPlay, Cell.White, currentPlayerValidMoves.get(pointToPlay));
 		}		
