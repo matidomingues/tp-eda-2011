@@ -1,6 +1,5 @@
 package base;
 
-import testbiz.GraphViz;
 import MinMax.PointCalc;
 
 public class GameDepth extends Game {
@@ -57,19 +56,4 @@ public class GameDepth extends Game {
 			return beta;
 		}
 	}
-		
-	
-	
-//	
-//	private class Node{
-//		private int value;
-//		private Point point;
-//		private Board board;
-//	
-//		public Node(Point point, Board board){
-//			this.point = point;
-//			this.board = board;
-//		}
-//		
-//	}
 }

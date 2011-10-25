@@ -45,11 +45,16 @@ public class PointCalc {
 		return actualMax;
 	}
 
+	
+	
+	
+	
+	
 	public Integer minDepth(Board board, int depth, Integer value, Cell actual,
 			Cell enemy, Node head) {
 		Integer aux = null, localmin = null;
 		if (depth == 0) {
-			return board.evaluateBoard(actual);
+			return board.evaluateBoard(currentPlayer);
 		}
 		for (Point p : board.moves(actual).keySet()) {
 			Board newboard = board.clone();
@@ -85,7 +90,7 @@ public class PointCalc {
 			Cell enemy, Node head) {
 		Integer aux = null, localmax = null;
 		if (depth == 0) {
-			return board.evaluateBoard(actual);
+			return board.evaluateBoard(currentPlayer);
 		}
 		for (Point p : board.moves(actual).keySet()) {
 			Board newboard = board.clone();
