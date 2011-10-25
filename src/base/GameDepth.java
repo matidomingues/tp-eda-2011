@@ -1,9 +1,14 @@
 package base;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import testbiz.GraphViz;
 
 public class GameDepth extends Game {
 
+	BufferedWriter gv;
 	GraphViz vz = new GraphViz();
 	
 	public GameDepth(String filePath, int depth) throws Exception {
@@ -17,22 +22,26 @@ public class GameDepth extends Game {
 	}
 	
 	public Point miniMax(Board board, int depth, Cell player){
-		vz.addln(vz.start_graph());
+		startWritter();
 		Point point = null;
 		int euristic = Integer.MIN_VALUE;
+		int i = 0;
+		System.out.println("MIN_VALUE: " + Integer.MIN_VALUE);
 		for(Point p: board.moves(player).keySet()){
+			System.out.println("nodo: " + i++);
+			System.out.println("Point: " + p);
 			Board child = board.clone();
-			vz.addln( board.hashCode() + " -> "+child.hashCode());
+			addLine(board.hashCode() + " -> "+child.hashCode());
 			child.add(p.getX(), p.getY(), player);
-			int euristicPoint = minimax(child,depth-1,Integer.MIN_VALUE,Integer.MIN_VALUE, player.oposite());
-			vz.addln(child.hashCode() + " [label = \"" + p + euristicPoint+ "\"];");
+			int euristicPoint = minimax(child,depth-1,Integer.MIN_VALUE,Integer.MAX_VALUE, player.oposite());
+			addLine(child.hashCode() + " [label = \"(" + p + ") " + euristicPoint+ "\", shape = ellipse];");
 			if(euristic <= euristicPoint){
 				point = p;
+				euristic = euristicPoint;
 			}			
 		}
-		vz.addln(board.hashCode() + " [label = \"null " + euristic + "\"];");
-		vz.addln(vz.end_graph());
-		System.out.println(vz.getDotSource());
+		addLine(board.hashCode() + " [label = \"null " + euristic + "\", shape = box];");
+		end();
 		return point;		
 		
 	}
@@ -44,12 +53,14 @@ public class GameDepth extends Game {
 		if(player == currentPlayer){
 			for(Point p: board.moves(player).keySet()){
 				Board child = board.clone();
-				vz.addln(board.hashCode() + " -> "+ child.hashCode());
+				addLine(board.hashCode() + " -> "+ child.hashCode());
 				child.add(p.getX(), p.getY(), player);
 				alpha = Math.max(alpha, minimax(child,depth-1,alpha,beta,player.oposite()));
-				vz.addln(child.hashCode() + " [label = \"" + p + alpha+ "\"];");
-				if(prune && (beta <= alpha)){
+				if(prune && (beta < alpha)){
+					addLine(child.hashCode() + " [label = \"(" + p + ")\",shape = ellipse, fillcolor=grey, style=filled];");
 					break;
+				}else{
+					addLine(child.hashCode() + " [label = \"(" + p + ") " + alpha+ "\",shape = ellipse];");
 				}
 			}
 			return alpha;
@@ -57,15 +68,57 @@ public class GameDepth extends Game {
 		else{
 			for(Point p: board.moves(player).keySet()){
 				Board child = board.clone();
-				vz.addln(board.hashCode() + " -> "+ child.hashCode());
+				addLine(board.hashCode() + " -> "+ child.hashCode());
 				child.add(p.getX(), p.getY(), player);
 				beta = Math.min(beta, minimax(child,depth-1,alpha,beta,player.oposite()));
-				vz.addln(child.hashCode() + " [label = \"" + p + beta + "\"];");
-				if(prune && (beta <= alpha)){
+
+				if(prune && (beta < alpha)){
+					addLine(child.hashCode() + " [label = \"(" + p + ")\", shape = box, fillcolor=grey, style=filled];");
 					break;
+				}else{
+					addLine(child.hashCode() + " [label = \"(" + p + ") " + beta + "\", shape = box];");
 				}
 			}
 			return beta;
 		}
 	}
+	
+	public void startWritter(){
+		  FileWriter fstream;
+		try {
+			fstream = new FileWriter("resources/dot.dot");
+			  BufferedWriter out = new BufferedWriter(fstream);
+			  this.gv = out;
+			  gv.write("digraph G {\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	public void addLine(String line){
+		try {
+			gv.write(line + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void end(){
+		try {
+			gv.write("}");
+			gv.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
