@@ -82,8 +82,8 @@ public abstract class Game {
 			board[i][6] = -5;
 		}
 		board[0][0] = board[0][7] = board[7][0] = board[7][7] = 120;
-		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -30;
-		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -30;
+		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -40;
+		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -40;
 		board[0][2] = board[0][5] = board[2][0] = board[2][7] = 20;
 		board[5][0] = board[5][7] = board[7][2] = board[7][5] = 20;
 		for (int j = 3; j <= 4; j++) {
