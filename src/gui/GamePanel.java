@@ -5,8 +5,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionAdapter;
-
 import javax.swing.JPanel;
 
 /**
@@ -15,6 +13,7 @@ import javax.swing.JPanel;
  * utilice ser notificada cuando el usuario posiciona el mouse sobre una celda
  * de la grilla.
  */
+@SuppressWarnings("serial")
 public class GamePanel extends JPanel {
 
 	private int rows, columns;
