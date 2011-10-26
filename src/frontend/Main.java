@@ -3,6 +3,7 @@ package frontend;
 import base.Game;
 import base.GameDepth;
 import base.GameTime;
+import base.Point;
 
 public class Main {
 
@@ -68,6 +69,8 @@ public class Main {
 					} catch (Exception e) {
 						System.out.println("Invalid arguments");
 					}
+					Point point = game.miniMax(game.getBoard(),game.getN(),game.getCurrentPlayer());
+					System.out.println("El mejor punto a jugar es:" + point.getX() + ", " + point.getY());
 				} else {
 					System.out.println("Invalid arguments");
 					return;
