@@ -17,6 +17,10 @@ public class Main {
 		try {
 			if (args[0].equals("-visual")) {
 				if (args[1].equals("-maxtime")) {
+					if(Integer.valueOf(args[2])<=0){
+						System.out.println("Timer must be greater than 0");
+						return;
+					}
 					game = new GameTime(null, Integer.valueOf(args[2]));
 				} else if (args[1].equals("-depth")) {
 					game = new GameDepth(null, Integer.valueOf(args[2]));
@@ -36,6 +40,10 @@ public class Main {
 				board.newGame();
 			} else if (args[0].equals("-file")) {
 				if (args[4].equals("-maxtime")) {
+					if(Integer.valueOf(args[5])<=0){
+						System.out.println("Timer must be greater than 0");
+						return;
+					}
 					game = new GameTime(args[1], Integer.valueOf(args[5]));
 				} else if (args[4].equals("-depth")) {
 					game = new GameDepth(args[1], Integer.valueOf(args[5]));
