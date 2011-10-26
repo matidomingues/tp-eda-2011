@@ -59,7 +59,6 @@ public abstract class Game {
 				}
 			}
 			line = game.readLine();
-			System.out.println(line);
 		}
 
 		return gameBoard;
