@@ -27,10 +27,10 @@ public class GameTime extends Game {
 				answer = aux;
 			}
 			step++;
+			if(board.emptySlots() - (step-1) <= 0){
+				return answer;
+			}
 		}
-		/*if(answer == null){
-			throw new Exception();
-		}*/
 		return answer;
 	}
 	
@@ -87,6 +87,6 @@ public class GameTime extends Game {
 			return beta;
 		}
 	}
-
+	
 
 }

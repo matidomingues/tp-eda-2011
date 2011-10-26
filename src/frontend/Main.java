@@ -47,6 +47,10 @@ public class Main {
 					}
 					game = new GameTime(args[1], Integer.valueOf(args[5]));
 				} else if (args[4].equals("-depth")) {
+					if(Integer.valueOf(args[5])<=0){
+						System.out.println("Timer must be greater than 0");
+						return;
+					}
 					game = new GameDepth(args[1], Integer.valueOf(args[5]));
 				}
 				if (args.length >= 7) {
@@ -64,17 +68,10 @@ public class Main {
 							}
 						}
 					}
-					try {
-						game.setPlayer(Integer.valueOf(args[3]));
-					} catch (Exception e) {
-						System.out.println("Invalid arguments");
-					}
-					Point point = game.miniMax(game.getBoard(),game.getN(),game.getCurrentPlayer());
-					System.out.println("El mejor punto a jugar es:" + point.getX() + ", " + point.getY());
-				} else {
-					System.out.println("Invalid arguments");
-					return;
 				}
+				game.setPlayer(Integer.valueOf(args[3]));
+				Point point = game.miniMax(game.getBoard(),game.getN(),game.getCurrentPlayer());
+				System.out.println("El mejor punto a jugar es:" + point.getX() + ", " + point.getY());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
