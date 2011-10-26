@@ -2,8 +2,8 @@ package base;
 
 public class GameTime extends Game {
 	
+	private final long time;
 	private long maxTime;
-	private long startTime;
 	
 	public GameTime(String filePath,int time ) throws Exception {
 		this.heuristic = this.createHeuristic();
@@ -12,16 +12,16 @@ public class GameTime extends Game {
 		} else {
 			this.board = this.load(filePath);
 		}
-		maxTime = 1000*time;
+		this.time = 1000*time;
 	}
 
 	
 	public Point miniMax(Board board, int time, Cell player){
-		startTime = System.currentTimeMillis();
+		maxTime =this.time + System.currentTimeMillis();
 		Point answer=null;
 		Point aux=null;
 		int step = 1;
-		while(startTime - System.currentTimeMillis() > maxTime){
+		while(System.currentTimeMillis() < maxTime){
 			aux = miniMaxMax(board, step, player);
 			if(aux != null){
 				answer = aux;
@@ -36,7 +36,7 @@ public class GameTime extends Game {
 	
 	public Point miniMaxMax(Board board, int depth, Cell player){
 		
-		if(startTime - System.currentTimeMillis() > maxTime){
+		if(System.currentTimeMillis()  > maxTime){
 			return null;
 		}
 		Point point = null;
@@ -48,7 +48,7 @@ public class GameTime extends Game {
 			if(euristic <= euristicPoint){
 				point = p;
 			}
-			if(startTime - System.currentTimeMillis() > maxTime){
+			if(System.currentTimeMillis() > maxTime){
 				return null;
 			}
 		}
@@ -58,11 +58,11 @@ public class GameTime extends Game {
 	}
 	
 	public int minimax(Board board,int depth,int alpha,int beta, Cell player){
-		if(startTime - System.currentTimeMillis() > maxTime){
+		if( System.currentTimeMillis()  > maxTime){
 			return 0;
 		}
-		if(depth == 0 || gameEnded(board)){
-			board.evaluateBoard(currentPlayer);
+		if(depth <= 0 || gameEnded(board)){
+			return board.evaluateBoard(currentPlayer);
 		}
 		if(player == currentPlayer){
 			for(Point p: board.moves(player).keySet()){
