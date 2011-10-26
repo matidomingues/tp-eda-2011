@@ -3,8 +3,6 @@ package base;
 import java.util.ArrayList;
 import java.util.List;
 
-import base.Game.Node;
-
 public class GameTime extends Game {
 	
 	private final long time;
@@ -75,6 +73,7 @@ public class GameTime extends Game {
 			return goDown(board, player, alpha, beta, depth, true);
 		}
 	}
+	
 	private int goDown(Board board, Cell player, int alpha, int beta, int depth, boolean ismin){
 		Integer local = null;
 		List<Node> data = new ArrayList<Node>();
