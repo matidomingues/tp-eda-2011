@@ -57,6 +57,7 @@ public class GameDepth extends Game {
 			return board.evaluateBoard(currentPlayer);
 		}
 		if (player == currentPlayer) {
+			Integer localmax = null;
 			for (Point p : board.moves(player).keySet()) {
 				Board child = board.clone();
 				addLine(board.hashCode() + " -> " + child.hashCode());
@@ -66,10 +67,15 @@ public class GameDepth extends Game {
 				} else {
 					int aux = minimax(child, depth - 1, alpha, beta, player
 							.oposite());
-
+					if(localmax == null){
+						localmax = aux;
+						finalp = p;
+					}else if(localmax < aux){
+						localmax = aux;
+						finalp = p;
+					}
 					if (alpha < aux) {
 						alpha = aux;
-						finalp = p;
 					}
 					data.add(new Node(child.hashCode(), p, aux, true));
 				}
@@ -79,10 +85,10 @@ public class GameDepth extends Game {
 				}
 			}
 			addToDot(finalp, data);
-			return alpha;
+			return localmax;
 		} else {
+			Integer localmin = null;
 			for (Point p : board.moves(player).keySet()) {
-				System.out.println("lastbeta"+alpha + " " + beta );
 				Board child = board.clone();
 				addLine(board.hashCode() + " -> " + child.hashCode());
 				child.add(p.getX(), p.getY(), player);
@@ -94,9 +100,15 @@ public class GameDepth extends Game {
 					int aux = minimax(child, depth - 1, alpha, beta, player
 							.oposite());
 
+					if(localmin == null){
+						localmin = aux;
+						finalp = p;
+					}else if(localmin > aux){
+						localmin = aux;
+						finalp = p;
+					}
 					if (beta > aux) {
 						beta = aux;
-						finalp = p;
 					}
 					data.add(new Node(child.hashCode(), p, aux, false));
 
@@ -106,7 +118,7 @@ public class GameDepth extends Game {
 				}
 			}
 			addToDot(finalp, data);
-			return beta;
+			return localmin;
 		}
 		
 	}
