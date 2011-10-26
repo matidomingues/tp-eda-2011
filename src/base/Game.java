@@ -16,7 +16,7 @@ public abstract class Game {
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
 
-	public abstract Point miniMax(Board board, int n, Cell player);
+	public abstract Point miniMax(Board board, int depth, Cell player);
 
 	public void setPrune(boolean value) {
 		this.prune = value;
@@ -49,10 +49,10 @@ public abstract class Game {
 		Board gameBoard = new Board(heuristic);
 		for (int i = 0; i < 8; i++) {
 			for (int j = 0; j < 8; j++) {
-				if (line.charAt(j) == 1) {
-					gameBoard.add(i, j, Cell.White);
-				} else if (line.charAt(j) == 2) {
+				if (line.charAt(j) == '1') {
 					gameBoard.add(i, j, Cell.Black);
+				} else if (line.charAt(j) == '2') {
+					gameBoard.add(i, j, Cell.White);
 				} else if (line.charAt(j) == ' ') {
 				} else {
 					throw new Exception();
@@ -107,7 +107,7 @@ public abstract class Game {
 	}
 
 	public void play() {
-		Point pointToPlay = miniMax(board, n, currentPlayer);
+		Point pointToPlay = miniMax(board,n,currentPlayer);
 		System.out.println("POINT TO PLAY:  " + pointToPlay);
 		if (pointToPlay != null) {
 			board.addAndTurn(pointToPlay, Cell.White,
