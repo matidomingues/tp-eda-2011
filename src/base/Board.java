@@ -77,18 +77,53 @@ public class Board {
 	// pondera nada mas por cantidad de movimientos y fichas
 	// se basa en mis fichas menos las del otro
 	public int evaluateBoard(Cell player) {
-		int ret = 0;
-		for (int i = 0; i < board[0].length; i++) {
-			for (int j = 0; j < board[0].length; j++) {
-				Cell color = board[i][j];
-				if (color == player) {
-					ret += heuristic[i][j];
-				} else if (color != Cell.Empty) {
-					ret -= heuristic[i][j];
+		if (this.gameEnded()) {
+			Cell winner = winner();
+			if (winner == player) {
+				return Integer.MAX_VALUE;
+			} else if (winner == player.oposite()) {
+				return Integer.MIN_VALUE;
+			}else{
+				return 0;
+			}
+		} else {
+
+			int ret = 0;
+			for (int i = 0; i < board[0].length; i++) {
+				for (int j = 0; j < board[0].length; j++) {
+					Cell color = board[i][j];
+					if (color == player) {
+						ret += heuristic[i][j];
+					} else if (color != Cell.Empty) {
+						ret -= heuristic[i][j];
+					}
+				}
+			}
+			return ret;
+		}
+	}
+
+	public Cell winner() {
+		int white = 0;
+		int black = 0;
+
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board.length; j++) {
+				if (board[i][j] == Cell.Black) {
+					black++;
+				} else if (board[i][j] == Cell.White) {
+					white++;
 				}
 			}
 		}
-		return ret;
+		if (white > black) {
+			return Cell.White;
+		}
+		if (black > white) {
+			return Cell.Black;
+		} else
+			return Cell.Empty;
+
 	}
 
 	public void add(int x, int y, Cell val) {
@@ -96,19 +131,23 @@ public class Board {
 	}
 
 	private void setCell(Point loc, Cell color) {
-		if(board[loc.x][loc.y] != color){
-			if(board[loc.x][loc.y] == Cell.Empty){
-				switch(color){
-				case White: cantWhite++;
-				case Black: cantBlack++;
+		if (board[loc.x][loc.y] != color) {
+			if (board[loc.x][loc.y] == Cell.Empty) {
+				switch (color) {
+				case White:
+					cantWhite++;
+				case Black:
+					cantBlack++;
 				}
-			}else{
-				switch(color){
-				case White: cantWhite++;
-							cantBlack--;
-				case Black: cantBlack++;
-							cantWhite--;
-				}	
+			} else {
+				switch (color) {
+				case White:
+					cantWhite++;
+					cantBlack--;
+				case Black:
+					cantBlack++;
+					cantWhite--;
+				}
 			}
 			board[loc.x][loc.y] = color;
 			notifyChange(loc, color);
@@ -226,15 +265,23 @@ public class Board {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board.length; j++) {
 				ret[j][i] = board[i][j];
-			
+
 			}
 		}
 		return ret;
 	}
-	
-	public boolean isSimetric(Cell[][] board){
-		for(int i = 0; i <= 3; i++){
-			if(this.compBoard(board)){
+
+	public boolean gameEnded() {
+		if (this.moves(Cell.Black).isEmpty()
+				&& this.moves(Cell.White).isEmpty()) {
+			return true;
+		} else
+			return false;
+	}
+
+	public boolean isSimetric(Cell[][] board) {
+		for (int i = 0; i <= 3; i++) {
+			if (this.compBoard(board)) {
 				return true;
 			}
 			board = rotateBoard(board);
@@ -252,20 +299,20 @@ public class Board {
 		if (getClass() != obj.getClass())
 			return false;
 		Cell[][] other = ((Board) obj).board;
-		
-		if(this.isSimetric(other)){
+
+		if (this.isSimetric(other)) {
 			return true;
-		}else{
+		} else {
 			other = transpBoard(other);
-			if(this.isSimetric(other)){
+			if (this.isSimetric(other)) {
 				return true;
-			}			
+			}
 		}
-	
+
 		return false;
 	}
-	
-	public Cell[][] getBoard(){
+
+	public Cell[][] getBoard() {
 		return board;
 	}
 
