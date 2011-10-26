@@ -106,7 +106,6 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
-				//System.out.println(main.miniMax(main.getBoard(),main.getN(),main.getCurrentPlayer()));
 				main.play();
 				main.moves(1);
 				pmoves = main.gotMoves();
@@ -115,7 +114,8 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				main.print();
 			}
 		}
-		
+		Cell winner = main.winner();
+		//imprimir cartel con ganador y terminar aplicacion
 
 	}
 

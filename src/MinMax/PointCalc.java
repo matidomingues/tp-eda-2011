@@ -1,10 +1,9 @@
 package MinMax;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import testbiz.GraphViz;
+
 
 import base.Board;
 import base.Cell;
@@ -41,7 +40,6 @@ public class PointCalc {
 				actualMax = p;
 			}
 		}
-		printminmax(main);
 		return actualMax;
 	}
 
@@ -146,34 +144,7 @@ public class PointCalc {
 		}
 	}
 	
-	 public void printminmax(Node head){
-		 GraphViz gv = new GraphViz();
-		 
-	      gv.addln(gv.start_graph());
-	      printminmax(head,gv);
-	      gv.addln(gv.end_graph());
-	      System.out.println(gv.getDotSource());
-	   
-	      File out = new File("c:/dot.dot");    // Windows
-	      gv.writeGraphToFile( gv.getGraph( gv.getDotSource(), ".dot" ), out );
-	 
-	 }
-	
-	private void printminmax(Node head, GraphViz gv){
-		if(head == null){
-			return;
-		}
-		for(Node a: head.sig){
-			if(head.p == null){
-				gv.addln("null" + "b" + a.value +  " -> " + a.p.getX()+"a"+ a.p.getY() + "b" + a.value+ ";" );	
-			}else{
-				gv.addln(head.p.getX()+"a"+head.p.getY() + "b" + a.value +  " -> " + a.p.getX()+"a"+ a.p.getY() + "b" + a.value+ ";" );
-			}
-		
-			printminmax(a, gv);
-		}
-	}
-	
+
 	
 	
 	
