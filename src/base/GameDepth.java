@@ -16,8 +16,11 @@ public class GameDepth extends Game {
 	}
 
 	public Point miniMax(Board board, int depth, Cell player) {
-		startWritter();
-		List<Node> data = new ArrayList<Node>();
+		List<Node> data = null;
+		if(treeMode){
+			startWritter();
+			data = new ArrayList<Node>();
+		}
 		Point point = null;
 		int euristic = Integer.MIN_VALUE;
 		for (Point p : board.moves(player).keySet()) {
@@ -68,7 +71,7 @@ public class GameDepth extends Game {
 		for (Point p : board.moves(player).keySet()) {
 			System.out.println(currentPlayer + " " +currentPlayerValidMoves.size());
 			Board child = board.clone();
-			if(prune){
+			if(treeMode){
 				addLine(board.hashCode() + " -> " + child.hashCode());
 				child.add(p.getX(), p.getY(), player);
 			}
