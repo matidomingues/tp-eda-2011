@@ -1,14 +1,10 @@
 package base;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameDepth extends Game {
-
-	BufferedWriter gv;
 
 	public GameDepth(String filePath, int depth) throws Exception {
 		this.heuristic = this.createHeuristic();
@@ -27,190 +23,91 @@ public class GameDepth extends Game {
 		int euristic = Integer.MIN_VALUE;
 		for (Point p : board.moves(player).keySet()) {
 			Board child = board.clone();
-			addLine(board.hashCode() + " -> " + child.hashCode());
-			child.add(p.getX(), p.getY(), player);
-			
+			if(treeMode){
+				addLine(board.hashCode() + " -> " + child.hashCode());
+				child.add(p.getX(), p.getY(), player);
+			}
 			int euristicPoint = minimax(child, depth - 1, euristic,
 					Integer.MAX_VALUE, player.oposite());
 			
-			data.add(new Node(child.hashCode(), p, euristicPoint, true));
+			if(treeMode){
+				data.add(new Node(child.hashCode(), p, euristicPoint, true));
+			}
 
 			if (euristic <= euristicPoint) {
 				point = p;
 				euristic = euristicPoint;
 			}
 		}
-		addToDot(point, data);
-
-		addLine(board.hashCode() + " [label = \"null " + euristic
-				+ "\", shape = box, style = filled, fillcolor = red];");
-		end();
+		if(treeMode){
+			addToDot(point, data);
+			addLine(board.hashCode() + " [label = \"null " + euristic
+					+ "\", shape = box, style = filled, fillcolor = red];");
+			end();
+		}
 		return point;
 
 	}
 
 	private int minimax(Board board, int depth, int alpha, int beta, Cell player) {
-		Point finalp = null;
-		List<Node> data = new ArrayList<Node>();
-		boolean isgrey = false;
 		if (depth == 0 || gameEnded(board)) {
 			return board.evaluateBoard(currentPlayer);
 		}
 		if (player == currentPlayer) {
-			Integer localmax = null;
-			for (Point p : board.moves(player).keySet()) {
-				System.out.println(currentPlayer + " " +  currentPlayerValidMoves.size());
-				Board child = board.clone();
-				addLine(board.hashCode() + " -> " + child.hashCode());
-				child.add(p.getX(), p.getY(), player);
-				if (isgrey) {
-					data.add(new Node(child.hashCode(), p, null, true));
-				} else {
-					int aux = minimax(child, depth - 1, alpha, beta, player
-							.oposite());
-					if(localmax == null){
-						localmax = aux;
-						finalp = p;
-					}else if(localmax < aux){
-						localmax = aux;
-						finalp = p;
-					}
-					if (alpha < aux) {
-						alpha = aux;
-					}
-					data.add(new Node(child.hashCode(), p, aux, true));
-				}
-				if (prune && (beta <= alpha)) {
-					isgrey = true;
-
-				}
-			}
-			if(localmax == null){
-				localmax = minimax(board,depth-1,alpha,beta,player.oposite());
-			}else{
-				addToDot(finalp, data);
-			}
-			return localmax;
+			return goDown(board, player, alpha, beta, depth, false);
 		} else {
-			Integer localmin = null;
-			for (Point p : board.moves(player).keySet()) {
-				System.out.println(currentPlayer + " " +currentPlayerValidMoves.size());
-				Board child = board.clone();
-				addLine(board.hashCode() + " -> " + child.hashCode());
-				child.add(p.getX(), p.getY(), player);
-
-				if (isgrey) {
-					data.add(new Node(child.hashCode(), p, null, false));
-
-				} else {
-					int aux = minimax(child, depth - 1, alpha, beta, player
-							.oposite());
-
-					if(localmin == null){
-						localmin = aux;
-						finalp = p;
-					}else if(localmin > aux){
-						localmin = aux;
-						finalp = p;
-					}
-					if (beta > aux) {
-						beta = aux;
-					}
-					data.add(new Node(child.hashCode(), p, aux, false));
-
-				}
-				if (prune && (beta <= alpha)) {
-					isgrey = true;
-				}
-			}
-			if(localmin == null){
-				localmin = minimax(board,depth-1,alpha,beta,player.oposite());
-			}else{
-				addToDot(finalp, data);
-			}
-			return localmin;
+			return goDown(board, player, alpha, beta, depth, true);
 		}
 		
 	}
-
-	public void startWritter() {
-		FileWriter fstream;
-		try {
-			fstream = new FileWriter("resources/dot.dot");
-			BufferedWriter out = new BufferedWriter(fstream);
-			this.gv = out;
-			gv.write("digraph G {");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
-
-	public void addLine(String line) {
-		try {
-			gv.write(line + "\n");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void end() {
-		try {
-			gv.write("}");
-			gv.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static class Node {
-		private Integer id;
-		private Point p;
-		private Integer heuristic;
-		private boolean isGrey = false;
-		private boolean ismin;
-
-		public Node(Integer id, Point p, Integer heuristic, boolean min) {
-			this.p = p;
-			this.id = id;
-			this.heuristic = heuristic;
-			if (heuristic == null) {
-				isGrey = true;
+	
+	private int goDown(Board board, Cell player, int alpha, int beta, int depth, boolean ismin){
+		Integer local = null;
+		List<Node> data = new ArrayList<Node>();
+		Point finalp = null;
+		boolean isgrey = false;
+		for (Point p : board.moves(player).keySet()) {
+			System.out.println(currentPlayer + " " +currentPlayerValidMoves.size());
+			Board child = board.clone();
+			if(prune){
+				addLine(board.hashCode() + " -> " + child.hashCode());
+				child.add(p.getX(), p.getY(), player);
 			}
-			this.ismin = min;
-		}
-	}
+			if (treeMode && isgrey) {
+				data.add(new Node(child.hashCode(), p, null, false));
+			} else {
+				int aux = minimax(child, depth - 1, alpha, beta, player
+						.oposite());
+				if(local == null){
+					local = aux;
+					finalp = p;
+				}else if(ismin && local > aux){
+					local = aux;
+					finalp = p;
+				}else if(!ismin && local < aux){
+					local = aux;
+					finalp = p;
+				}	
+				if (ismin && beta > aux) {
+					beta = aux;
+				}else if (!ismin && alpha < aux) {
+					alpha = aux;
+				}
+				if(treeMode){
+					data.add(new Node(child.hashCode(), p, aux, false));
+				}
 
-	public void addToDot(Point p, List<Node> data) {
-		for (Node a : data) {
-			if (a.isGrey) {
-				if(a.ismin){
-					addLine(a.id + " [label = \"(" + a.p+ "\",shape = ellipse, fillcolor=grey, style=filled];");	
-				}else{
-					addLine(a.id + " [label = \"(" + a.p+ "\",shape = box, fillcolor=grey, style=filled];");
-				}
-			}else if(p == null){
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
-
-				}
-						
-			} else if (p.equals(a.p)) {
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse, fillcolor = red, style = filled];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box, fillcolor = red, style = filled];");
-				}
-			}else{
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
-
-				}
+			}
+			if (prune && (beta <= alpha)) {
+				isgrey = true;
 			}
 		}
+		if(local == null){
+			local = minimax(board,depth-1,alpha,beta,player.oposite());
+		}else if(treeMode){
+			addToDot(finalp, data);
+		}
+		return local;
 	}
+
 }

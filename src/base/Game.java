@@ -1,10 +1,14 @@
 package base;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class Game {
 	protected Board board;
@@ -15,9 +19,10 @@ public abstract class Game {
 	protected boolean treeMode = false;
 	protected MapObserver observer;
 	protected HashMap<Point, ArrayList<Point>> currentPlayerValidMoves = new HashMap<Point, ArrayList<Point>>();
+	protected BufferedWriter gv;
 
 	public abstract Point miniMax(Board board, int depth, Cell player);
-
+	
 	public void setPrune(boolean value) {
 		this.prune = value;
 	}
@@ -72,7 +77,7 @@ public abstract class Game {
 			}
 		}
 		board[2][2] = board[2][5] = board[5][2] = board[5][5] = 15;
-		board[1][1] = board[1][6] = board[6][1] = board[6][6] = -50;
+		board[1][1] = board[1][6] = board[6][1] = board[6][6] = -60;
 		for (int j = 2; j <= 5; j++) {
 			board[1][j] = -5;
 			board[6][j] = -5;
@@ -81,18 +86,18 @@ public abstract class Game {
 			board[i][1] = -5;
 			board[i][6] = -5;
 		}
-		board[0][0] = board[0][7] = board[7][0] = board[7][7] = 150;
-		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -40;
-		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -40;
-		board[0][2] = board[0][5] = board[2][0] = board[2][7] = 20;
-		board[5][0] = board[5][7] = board[7][2] = board[7][5] = 20;
+		board[0][0] = board[0][7] = board[7][0] = board[7][7] = 300;
+		board[0][1] = board[0][6] = board[1][0] = board[1][7] = -50;
+		board[7][1] = board[7][6] = board[6][0] = board[6][7] = -50;
+		board[0][2] = board[0][5] = board[2][0] = board[2][7] = 40;
+		board[5][0] = board[5][7] = board[7][2] = board[7][5] = 40;
 		for (int j = 3; j <= 4; j++) {
-			board[0][j] = 10;
-			board[7][j] = 10;
+			board[0][j] = 30;
+			board[7][j] = 30;
 		}
 		for (int i = 3; i <= 4; i++) {
-			board[i][0] = 10;
-			board[i][7] = 10;
+			board[i][0] = 30;
+			board[i][7] = 30;
 		}
 
 		System.out.println("HEURISTICA");
@@ -175,5 +180,86 @@ public abstract class Game {
 
 	public Cell winner() {
 		return board.winner();		
+	}
+	
+	protected void startWritter() {
+		FileWriter fstream;
+		try {
+			fstream = new FileWriter("resources/dot.dot");
+			BufferedWriter out = new BufferedWriter(fstream);
+			this.gv = out;
+			gv.write("digraph G {");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	protected void addLine(String line) {
+		try {
+			gv.write(line + "\n");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void end() {
+		try {
+			gv.write("}");
+			gv.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected static class Node {
+		private Integer id;
+		private Point p;
+		private Integer heuristic;
+		private boolean isGrey = false;
+		private boolean ismin;
+
+		public Node(Integer id, Point p, Integer heuristic, boolean min) {
+			this.p = p;
+			this.id = id;
+			this.heuristic = heuristic;
+			if (heuristic == null) {
+				isGrey = true;
+			}
+			this.ismin = min;
+		}
+	}
+
+	protected void addToDot(Point p, List<Node> data) {
+		for (Node a : data) {
+			if (a.isGrey) {
+				if(a.ismin){
+					addLine(a.id + " [label = \"(" + a.p+ "\",shape = ellipse, fillcolor=grey, style=filled];");	
+				}else{
+					addLine(a.id + " [label = \"(" + a.p+ "\",shape = box, fillcolor=grey, style=filled];");
+				}
+			}else if(p == null){
+				if(a.ismin){
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
+				}else{
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
+
+				}
+						
+			} else if (p.equals(a.p)) {
+				if(a.ismin){
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse, fillcolor = red, style = filled];");
+				}else{
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box, fillcolor = red, style = filled];");
+				}
+			}else{
+				if(a.ismin){
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
+				}else{
+					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
+
+				}
+			}
+		}
 	}
 }
