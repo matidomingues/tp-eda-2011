@@ -35,7 +35,7 @@ public class GameDepth extends Game {
 			
 			data.add(new Node(child.hashCode(), p, euristicPoint, true));
 
-			if (euristic < euristicPoint) {
+			if (euristic <= euristicPoint) {
 				point = p;
 				euristic = euristicPoint;
 			}
@@ -59,6 +59,7 @@ public class GameDepth extends Game {
 		if (player == currentPlayer) {
 			Integer localmax = null;
 			for (Point p : board.moves(player).keySet()) {
+				System.out.println(currentPlayer + " " +  currentPlayerValidMoves.size());
 				Board child = board.clone();
 				addLine(board.hashCode() + " -> " + child.hashCode());
 				child.add(p.getX(), p.getY(), player);
@@ -84,11 +85,16 @@ public class GameDepth extends Game {
 
 				}
 			}
-			addToDot(finalp, data);
+			if(localmax == null){
+				localmax = minimax(board,depth-1,alpha,beta,player.oposite());
+			}else{
+				addToDot(finalp, data);
+			}
 			return localmax;
 		} else {
 			Integer localmin = null;
 			for (Point p : board.moves(player).keySet()) {
+				System.out.println(currentPlayer + " " +currentPlayerValidMoves.size());
 				Board child = board.clone();
 				addLine(board.hashCode() + " -> " + child.hashCode());
 				child.add(p.getX(), p.getY(), player);
@@ -117,7 +123,11 @@ public class GameDepth extends Game {
 					isgrey = true;
 				}
 			}
-			addToDot(finalp, data);
+			if(localmin == null){
+				localmin = minimax(board,depth-1,alpha,beta,player.oposite());
+			}else{
+				addToDot(finalp, data);
+			}
 			return localmin;
 		}
 		
@@ -172,7 +182,6 @@ public class GameDepth extends Game {
 	}
 
 	public void addToDot(Point p, List<Node> data) {
-		System.out.println(p);
 		for (Node a : data) {
 			if (a.isGrey) {
 				if(a.ismin){
