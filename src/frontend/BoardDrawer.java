@@ -115,7 +115,12 @@ public class BoardDrawer extends JFrame implements MapObserver {
 			}
 		}
 		Cell winner = main.winner();
-		//imprimir cartel con ganador y terminar aplicacion
+		if(winner.equals(Cell.Black)){
+			new MessageFrame("Fin del juego - Ganó el jugador Negro");
+		}else if(winner.equals(Cell.White)){
+			new MessageFrame("Fin del juego - Ganó el jugador Blanco");
+		}else
+			new MessageFrame("Fin del juego - Empate");
 
 	}
 

@@ -12,6 +12,7 @@ public class GameDepth extends Game {
 		this.n = depth;
 	}
 	
+	
 	public Point miniMax(Board board, int depth, Cell player){
 
 		Point point = null;
@@ -61,5 +62,6 @@ public class GameDepth extends Game {
 			}
 			return beta;
 		}
+		
 	}
 }
