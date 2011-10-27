@@ -18,7 +18,7 @@ public class Main {
 		try {
 			if (args[0].equals("-visual")) {
 				if (args[1].equals("-maxtime")) {
-					if(Integer.valueOf(args[2])<=0){
+					if (Integer.valueOf(args[2]) <= 0) {
 						System.out.println("Timer must be greater than 0");
 						return;
 					}
@@ -41,13 +41,13 @@ public class Main {
 				board.newGame();
 			} else if (args[0].equals("-file")) {
 				if (args[4].equals("-maxtime")) {
-					if(Integer.valueOf(args[5])<=0){
+					if (Integer.valueOf(args[5]) <= 0) {
 						System.out.println("Timer must be greater than 0");
 						return;
 					}
 					game = new GameTime(args[1], Integer.valueOf(args[5]));
 				} else if (args[4].equals("-depth")) {
-					if(Integer.valueOf(args[5])<=0){
+					if (Integer.valueOf(args[5]) <= 0) {
 						System.out.println("Timer must be greater than 0");
 						return;
 					}
@@ -70,8 +70,14 @@ public class Main {
 					}
 				}
 				game.setPlayer(Integer.valueOf(args[3]));
-				Point point = game.miniMax(game.getBoard(),game.getN(),game.getCurrentPlayer());
-				System.out.println("El mejor punto a jugar es:" + point.getX() + ", " + point.getY());
+				Point point = game.miniMax(game.getBoard(), game.getN(), game
+						.getCurrentPlayer());
+				if (point == null) {
+					System.out.println("No existe jugada posible");
+				} else {
+					System.out.println("El mejor punto a jugar es:"
+							+ point.getX() + ", " + point.getY());
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

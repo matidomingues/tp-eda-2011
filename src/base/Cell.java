@@ -1,13 +1,12 @@
 package base;
 
 public enum Cell {
-	Empty , Black, White;
+	Empty, Black, White;
 
-	public Cell oposite(){
-		if(this == Black){
+	public Cell oposite() {
+		if (this == Black) {
 			return White;
-		}
-		else{
+		} else {
 			return Black;
 		}
 	}

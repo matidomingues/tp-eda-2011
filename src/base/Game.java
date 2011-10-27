@@ -22,7 +22,7 @@ public abstract class Game {
 	protected BufferedWriter gv;
 
 	public abstract Point miniMax(Board board, int depth, Cell player);
-	
+
 	public void setPrune(boolean value) {
 		this.prune = value;
 	}
@@ -32,8 +32,8 @@ public abstract class Game {
 	}
 
 	public void addAndTurn(int x, int y) {
-		board.addAndTurn(new Point(x, y), Cell.Black,
-				currentPlayerValidMoves.get(new Point(x, y)));
+		board.addAndTurn(new Point(x, y), Cell.Black, currentPlayerValidMoves
+				.get(new Point(x, y)));
 	}
 
 	public void subscribe(MapObserver observer) {
@@ -112,11 +112,11 @@ public abstract class Game {
 	}
 
 	public void play() {
-		Point pointToPlay = miniMax(board,n,currentPlayer);
+		Point pointToPlay = miniMax(board, n, currentPlayer);
 		System.out.println("POINT TO PLAY:  " + pointToPlay);
 		if (pointToPlay != null) {
-			board.addAndTurn(pointToPlay, Cell.White,
-					currentPlayerValidMoves.get(pointToPlay));
+			board.addAndTurn(pointToPlay, Cell.White, currentPlayerValidMoves
+					.get(pointToPlay));
 		}
 	}
 
@@ -179,13 +179,18 @@ public abstract class Game {
 	}
 
 	public Cell winner() {
-		return board.winner();		
+		return board.winner();
 	}
-	
-	protected void startWritter() {
+
+	protected void startWritter(Integer num) {
 		FileWriter fstream;
 		try {
-			fstream = new FileWriter("resources/dot.dot");
+			if (num == null) {
+				fstream = new FileWriter("tree.dot");
+
+			} else {
+				fstream = new FileWriter("tree" + num + ".dot");
+			}
 			BufferedWriter out = new BufferedWriter(fstream);
 			this.gv = out;
 			gv.write("digraph G {");
@@ -233,32 +238,66 @@ public abstract class Game {
 	protected void addToDot(Point p, List<Node> data) {
 		for (Node a : data) {
 			if (a.isGrey) {
-				if(a.ismin){
-					addLine(a.id + " [label = \"(" + a.p+ "\",shape = ellipse, fillcolor=grey, style=filled];");	
-				}else{
-					addLine(a.id + " [label = \"(" + a.p+ "\",shape = box, fillcolor=grey, style=filled];");
+				if (a.ismin) {
+					addLine(a.id
+							+ " [label = \"("
+							+ a.p
+							+ "\",shape = ellipse, fillcolor=grey, style=filled];");
+				} else {
+					addLine(a.id + " [label = \"(" + a.p
+							+ "\",shape = box, fillcolor=grey, style=filled];");
 				}
-			}else if(p == null){
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
+			} else if (p == null) {
+				if (a.ismin) {
+					addLine(a.id + " [label = \"(" + a.p + ") " + a.heuristic
+							+ "\",shape = ellipse];");
+				} else {
+					addLine(a.id + " [label = \"(" + a.p + ") " + a.heuristic
+							+ "\",shape = box];");
 
 				}
-						
+
 			} else if (p.equals(a.p)) {
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse, fillcolor = red, style = filled];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box, fillcolor = red, style = filled];");
+				if (a.ismin) {
+					addLine(a.id
+							+ " [label = \"("
+							+ a.p
+							+ ") "
+							+ a.heuristic
+							+ "\",shape = ellipse, fillcolor = red, style = filled];");
+				} else {
+					addLine(a.id
+							+ " [label = \"("
+							+ a.p
+							+ ") "
+							+ a.heuristic
+							+ "\",shape = box, fillcolor = red, style = filled];");
 				}
-			}else{
-				if(a.ismin){
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = ellipse];");
-				}else{
-					addLine(a.id+" [label = \"("+a.p+ ") "+ a.heuristic+ "\",shape = box];");
+			} else {
+				if (a.ismin) {
+					addLine(a.id + " [label = \"(" + a.p + ") " + a.heuristic
+							+ "\",shape = ellipse];");
+				} else {
+					addLine(a.id + " [label = \"(" + a.p + ") " + a.heuristic
+							+ "\",shape = box];");
 
 				}
+			}
+		}
+	}
+
+	protected void changeName(int lastlevel) {
+		File data = new File("tree" + lastlevel + ".dot");
+		File newfile = new File("tree.dot");
+		data.renameTo(newfile);
+
+	}
+
+	protected void deleteFiles(int num) {
+		for (int i = 0; i <= num; i++) {
+			File f = new File("tree" + i + ".dot");
+			if (f.exists()) {
+				f.delete();
 			}
 		}
 	}
