@@ -1,5 +1,9 @@
 package frontend;
 
+import gui.GamePanel;
+import gui.GamePanelListener;
+import gui.ImageUtils;
+
 import java.awt.Color;
 import java.awt.Image;
 
@@ -9,9 +13,6 @@ import base.Cell;
 import base.Game;
 import base.MapObserver;
 import base.Point;
-import gui.GamePanel;
-import gui.GamePanelListener;
-import gui.ImageUtils;
 
 @SuppressWarnings("serial")
 public class BoardDrawer extends JFrame implements MapObserver {
@@ -52,7 +53,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 					System.out.println("");
 					main.print();
 				}
-			}else{
+			} else {
 				System.out.println("invalid click");
 			}
 		}
@@ -87,7 +88,7 @@ public class BoardDrawer extends JFrame implements MapObserver {
 	}
 
 	public void start() {
-		boolean pmoves= false , emoves= false;
+		boolean pmoves = false, emoves = false;
 		main.moves(1);
 		pmoves = main.gotMoves();
 		pturn = true;
@@ -98,14 +99,13 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if(!pmoves){
+				if (!pmoves) {
 					pturn = false;
 				}
 			} else {
 				main.moves(2);
 				emoves = main.gotMoves();
-				System.out.println(main.miniMax());
-				//main.playAny();
+				main.play();
 				main.moves(1);
 				pmoves = main.gotMoves();
 				pturn = true;
@@ -113,6 +113,13 @@ public class BoardDrawer extends JFrame implements MapObserver {
 				main.print();
 			}
 		}
+		Cell winner = main.winner();
+		if (winner.equals(Cell.Black)) {
+			new MessageFrame("Fin del juego - Ganó el jugador Negro");
+		} else if (winner.equals(Cell.White)) {
+			new MessageFrame("Fin del juego - Ganó el jugador Blanco");
+		} else
+			new MessageFrame("Fin del juego - Empate");
 
 	}
 
