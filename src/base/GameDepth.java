@@ -3,8 +3,16 @@ package base;
 import java.util.ArrayList;
 import java.util.List;
 
+/** Clase que modela un juego por profundidad
+ *  Extiende a la clase Game e implementa el metodo miniMax 
+ */
 public class GameDepth extends Game {
 
+	/** Constructor de la clase GameDepth
+	 * @param filePath path del archivo en caso de que sea modo -file
+	 * @param depth int profundidad del arbol para miniMax
+	 * @throws Exception En caso de problemas con el archivo
+	 */
 	public GameDepth(String filePath, int depth) throws Exception {
 		this.heuristic = this.createHeuristic();
 		if (filePath == null) {
@@ -15,6 +23,13 @@ public class GameDepth extends Game {
 		this.n = depth;
 	}
 
+	/** Metodo miniMax que retorna un punto
+	 * donde considera la mejor jugada a realizar
+	 * @param board Board tablero actual
+	 * @param depth int profundidad del arbol
+	 * @param player Cell jugador max
+	 * @return Point punto donde considera la mejor jugada 
+	 */
 	public Point miniMax(Board board, int depth, Cell player) {
 		List<Node> data = null;
 		if (treeMode) {
